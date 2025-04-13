@@ -1,0 +1,64 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Story_Teller.Views;
+using System.Net.Http.Headers;
+
+namespace Story_Teller.ViewModels;
+
+public partial class MainViewModel : ObservableObject
+{
+    // DELETE THESE LINES!!!! JUST FOR DEBUGGING!!! IMPLEMENT USER CLASSES AND DATABASE LATER
+    private string Username => "artem";
+
+    // DELETE THESE LINES!!!! JUST FOR DEBUGGING!!! IMPLEMENT USER CLASSES AND DATABASE LATER
+
+    [ObservableProperty]
+    private StoryViewModel? story;
+
+    [ObservableProperty]
+    private byte[]? image;
+
+    public MainViewModel()
+    {
+        Story = new StoryViewModel(new Models.Story());
+    }
+
+    partial void OnImageChanged(byte[]? value)
+    {
+        _ = OnImageChangedAsync();
+    }
+
+    private async Task OnImageChangedAsync()
+    {
+        if (Image == null) {
+            #if DEBUG
+                await Shell.Current.DisplayAlert("Exception", $"Image is null. Check what happens in MainPage.xaml.cs. (MainViewModel.cs:30)", "OK");
+            #else
+                await Shell.Current.DisplayAlert("Error", "The image could not be processed. Please try again.", "ОК");
+            #endif
+            return;
+        }
+
+        var content = new MultipartFormDataContent();
+        var byteContent = new ByteArrayContent(Image);
+        byteContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+        content.Add(byteContent, "file", $"{Username}_img_{DateTime.UtcNow:yyyyMMdd_HHmmss}");
+
+        var url = $"https://api.stories-teller.com/upload?user_id={Username}";
+        var client = new HttpClient();
+        var response = await client.PostAsync(url, content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await Shell.Current.DisplayAlert("Success", "Image uploaded successfully.", "OK");
+        }
+        else
+        {
+            #if DEBUG
+                await Shell.Current.DisplayAlert("Error", $"Upload failed: {response.ReasonPhrase}", "OK");
+            #else
+                await Shell.Current.DisplayAlert("Error", "The image could not be processed. Please try again.", "ОК");
+            #endif
+        }
+    }
+}
