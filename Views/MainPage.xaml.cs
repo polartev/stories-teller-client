@@ -10,6 +10,12 @@ namespace Story_Teller.Views
             InitializeComponent();
         }
 
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await App.MainViewModel.InitializeAsync();
+        }
+
         private async void Camera_MediaCaptured(object sender, CommunityToolkit.Maui.Views.MediaCapturedEventArgs e)
         {
             if (App.MainViewModel == null)

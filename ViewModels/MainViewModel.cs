@@ -18,9 +18,52 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private byte[]? image;
 
+    private Services.WebSocketService? webSocketService;
+
     public MainViewModel()
     {
         Story = new StoryViewModel(new Models.Story());
+        webSocketService = new Services.WebSocketService(Username);
+
+        webSocketService.OnMessageReceived += OnMessageReceived;
+    }
+
+    private void OnMessageReceived(string message)
+    {
+        if (string.IsNullOrEmpty(message) || Story == null)
+        {
+            return;
+        }
+
+        string content = "";
+
+        if (message.StartsWith("new_description:"))
+        {
+            content = message.Split(':')[1];
+        }
+        else
+        {
+            return;
+        }
+
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            Story.Content = content;
+        });
+    }
+
+    public async Task InitializeAsync()
+    {
+        if (webSocketService == null)
+        {
+            #if DEBUG
+                await Shell.Current.DisplayAlert("Debug", "WebSocketService is null. Check initialization. (MainViewModel.cs:30)", "OK");
+            #else
+                await Shell.Current.DisplayAlert("Error", "Core components are missing. Please restart the app.", "OK");
+            #endif
+            return;
+        }
+        await webSocketService.ConnectAsync();
     }
 
     partial void OnImageChanged(byte[]? value)
