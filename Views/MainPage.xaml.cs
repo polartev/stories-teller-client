@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Views;
+using System.Diagnostics;
 using System.Net.Http.Headers;
 
 namespace Story_Teller.Views
@@ -10,9 +12,26 @@ namespace Story_Teller.Views
             InitializeComponent();
         }
 
-        protected override async void OnAppearing()
+        protected override async void OnNavigatedTo(NavigatedToEventArgs args)
         {
-            base.OnAppearing();
+            base.OnNavigatedTo(args);
+
+            if (App.MainViewModel == null)
+            {
+#if DEBUG
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("Debug", "MainViewModel is missing. Check App initialization. (MainPage.xaml.cs:12)", "OK");
+                });
+#else
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("Error", "Core components are missing. Please restart the app.", "OK");
+                });
+#endif
+                return;
+            }
+
             await App.MainViewModel.InitializeAsync();
         }
 
@@ -20,11 +39,33 @@ namespace Story_Teller.Views
         {
             if (App.MainViewModel == null)
             {
-                #if DEBUG
+#if DEBUG
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
                     await DisplayAlert("Debug", "MainViewModel is missing. Check App initialization. (MainPage.xaml.cs:17)", "OK");
-                #else
+                });
+#else
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
                     await DisplayAlert("Error", "Core components are missing. Please restart the app.", "OK");
-                #endif
+                });
+#endif
+                return;
+            }
+
+            if (e.Media == null)
+            {
+#if DEBUG
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("Debug", "Media is null. Check camera capture.", "OK");
+                });
+#else
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("Error", "Failed to capture image. Please try again.", "OK");
+                });
+#endif
                 return;
             }
 
@@ -36,17 +77,40 @@ namespace Story_Teller.Views
             }
             catch (Exception ex)
             {
-                #if DEBUG
+#if DEBUG
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
                     await DisplayAlert("Exception", $"Capture failed: {ex.Message}", "OK");
-                #else
+                });
+#else
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
                     await DisplayAlert("Error", "The image could not be processed. Please try again.", "ОК");
-                #endif
+                });
+#endif
             }
         }
 
         private async void ImageButton_Clicked(object sender, EventArgs e)
         {
-            await Camera.CaptureImage(CancellationToken.None);
+            try
+            {
+                await Camera.CaptureImage(CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("Exception", $"CaptureImage failed: {ex.Message}", "OK");
+                });
+#else
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("Error", "Unable to access the camera. Please check permissions and try again.", "OK");
+                });
+#endif
+            }
         }
     }
 }

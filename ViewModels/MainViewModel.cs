@@ -56,11 +56,17 @@ public partial class MainViewModel : ObservableObject
     {
         if (webSocketService == null)
         {
-            #if DEBUG
+#if DEBUG
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
                 await Shell.Current.DisplayAlert("Debug", "WebSocketService is null. Check initialization. (MainViewModel.cs:30)", "OK");
-            #else
+            });
+#else
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
                 await Shell.Current.DisplayAlert("Error", "Core components are missing. Please restart the app.", "OK");
-            #endif
+            });
+#endif
             return;
         }
         await webSocketService.ConnectAsync();
@@ -74,11 +80,17 @@ public partial class MainViewModel : ObservableObject
     private async Task OnImageChangedAsync()
     {
         if (Image == null) {
-            #if DEBUG
+#if DEBUG
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
                 await Shell.Current.DisplayAlert("Exception", $"Image is null. Check what happens in MainPage.xaml.cs. (MainViewModel.cs:30)", "OK");
-            #else
+            });
+#else
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
                 await Shell.Current.DisplayAlert("Error", "The image could not be processed. Please try again.", "ОК");
-            #endif
+            });
+#endif
             return;
         }
 
@@ -93,15 +105,24 @@ public partial class MainViewModel : ObservableObject
 
         if (response.IsSuccessStatusCode)
         {
-            await Shell.Current.DisplayAlert("Success", "Image uploaded successfully.", "OK");
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await Shell.Current.DisplayAlert("Success", "Image uploaded successfully.", "OK");
+            });
         }
         else
         {
-            #if DEBUG
+#if DEBUG
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
                 await Shell.Current.DisplayAlert("Error", $"Upload failed: {response.ReasonPhrase}", "OK");
-            #else
+            });
+#else
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
                 await Shell.Current.DisplayAlert("Error", "The image could not be processed. Please try again.", "ОК");
-            #endif
+            });
+#endif
         }
     }
 }
