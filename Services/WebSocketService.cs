@@ -1,21 +1,27 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Story_Teller.IServices;
 using System.Net.WebSockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Story_Teller.Services;
 
-public class WebSocketService
+public partial class WebSocketService : ObservableObject, IWebSocketService
 {
+    public string ServiceName => "WebSocketService";
+
+    [ObservableProperty]
+    private bool isOnline = false;
+
     private ClientWebSocket? socket;
     private CancellationTokenSource? cts;
     private readonly string userId;
     public event Action<string>? OnMessageReceived;
 
-    public WebSocketService(string userId)
+    public WebSocketService()
     {
-        this.userId = userId;
+        // DELETE THESE LINES!!!! JUST FOR DEBUGGING!!! IMPLEMENT USER CLASSES AND DATABASE LATER
+        userId = "artem";
+        // DELETE THESE LINES!!!! JUST FOR DEBUGGING!!! IMPLEMENT USER CLASSES AND DATABASE LATER
     }
 
     public async Task ConnectAsync()
@@ -28,10 +34,11 @@ public class WebSocketService
             var uri = new Uri($"wss://api.stories-teller.com/ws/user/{userId}");
             await socket.ConnectAsync(uri, cts.Token);
             _ = ReceiveLoop();
+            IsOnline = true;
         }
-        catch (Exception ex)
+        catch
         {
-            Console.WriteLine("WebSocket connection error: " + ex.Message);
+            IsOnline = false;
         }
     }
 
@@ -77,5 +84,6 @@ public class WebSocketService
 
         cts?.Cancel();
         socket?.Dispose();
+        IsOnline = false;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Story_Teller.ServiceCollections;
+using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 
 namespace Story_Teller
@@ -17,8 +18,16 @@ namespace Story_Teller
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddUIServices();
+
+            builder.Services.AddSingleton<IServices.IWebSocketService, Services.WebSocketService>();
+            builder.Services.AddSingleton<IServices.IConnectionService, Services.ConnectionService>();
+
+            builder.Services.AddSingleton<ViewModels.MainViewModel>();
+            builder.Services.AddSingleton<Views.MainPage>();
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

@@ -1,43 +1,22 @@
-﻿using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Maui.Views;
-using System.Diagnostics;
-using System.Net.Http.Headers;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Story_Teller.ViewModels;
 
 namespace Story_Teller.Views
 {
     public partial class MainPage : ContentPage
     {
-        public MainPage()
+        private MainViewModel? mainViewModel;
+
+        public MainPage(MainViewModel mainViewModel)
         {
             InitializeComponent();
-        }
-
-        protected override async void OnNavigatedTo(NavigatedToEventArgs args)
-        {
-            base.OnNavigatedTo(args);
-
-            if (App.MainViewModel == null)
-            {
-#if DEBUG
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await DisplayAlert("Debug", "MainViewModel is missing. Check App initialization. (MainPage.xaml.cs:12)", "OK");
-                });
-#else
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await DisplayAlert("Error", "Core components are missing. Please restart the app.", "OK");
-                });
-#endif
-                return;
-            }
-
-            await App.MainViewModel.InitializeAsync();
+            BindingContext = mainViewModel;
+            this.mainViewModel = mainViewModel;
         }
 
         private async void Camera_MediaCaptured(object sender, CommunityToolkit.Maui.Views.MediaCapturedEventArgs e)
         {
-            if (App.MainViewModel == null)
+            if (mainViewModel == null)
             {
 #if DEBUG
                 MainThread.BeginInvokeOnMainThread(async () =>
@@ -73,7 +52,7 @@ namespace Story_Teller.Views
             {
                 using var ms = new MemoryStream();
                 await e.Media.CopyToAsync(ms);
-                App.MainViewModel.Image = ms.ToArray();
+                mainViewModel.Image = ms.ToArray();
             }
             catch (Exception ex)
             {

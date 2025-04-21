@@ -1,19 +1,14 @@
-﻿namespace Story_Teller
+﻿namespace Story_Teller;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    public App()
     {
-        public static ViewModels.MainViewModel? MainViewModel { get; private set; }
+        InitializeComponent();
+    }
 
-        public App()
-        {
-            InitializeComponent();
-        }
-
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            MainViewModel = new ViewModels.MainViewModel();
-
-            return new Window(new AppShell());
-        }
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        return new Window(new AppShell());
     }
 }

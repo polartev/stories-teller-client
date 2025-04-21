@@ -1,6 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Story_Teller.Views;
 using System.Net.Http.Headers;
 
 namespace Story_Teller.ViewModels;
@@ -13,19 +11,27 @@ public partial class MainViewModel : ObservableObject
     // DELETE THESE LINES!!!! JUST FOR DEBUGGING!!! IMPLEMENT USER CLASSES AND DATABASE LATER
 
     [ObservableProperty]
-    private StoryViewModel? story;
-
-    [ObservableProperty]
     private byte[]? image;
 
-    private Services.WebSocketService? webSocketService;
+    [ObservableProperty]
+    private StoryViewModel? story;
 
-    public MainViewModel()
+    private IServices.IAlertService alertService;
+    private IServices.IConnectionService connectionService;
+    private IServices.IWebSocketService webSocketService;
+
+    public MainViewModel(IServices.IAlertService alertService, 
+        IServices.IConnectionService connectionService, 
+        IServices.IWebSocketService webSocketService)
     {
         Story = new StoryViewModel(new Models.Story());
-        webSocketService = new Services.WebSocketService(Username);
+
+        this.alertService = alertService;
+        this.connectionService = connectionService;
+        this.webSocketService = webSocketService;
 
         webSocketService.OnMessageReceived += OnMessageReceived;
+        connectionService.StartMonitoring(webSocketService);
     }
 
     private void OnMessageReceived(string message)
@@ -52,26 +58,6 @@ public partial class MainViewModel : ObservableObject
         });
     }
 
-    public async Task InitializeAsync()
-    {
-        if (webSocketService == null)
-        {
-#if DEBUG
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await Shell.Current.DisplayAlert("Debug", "WebSocketService is null. Check initialization. (MainViewModel.cs:30)", "OK");
-            });
-#else
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await Shell.Current.DisplayAlert("Error", "Core components are missing. Please restart the app.", "OK");
-            });
-#endif
-            return;
-        }
-        await webSocketService.ConnectAsync();
-    }
-
     partial void OnImageChanged(byte[]? value)
     {
         _ = OnImageChangedAsync();
@@ -81,15 +67,9 @@ public partial class MainViewModel : ObservableObject
     {
         if (Image == null) {
 #if DEBUG
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await Shell.Current.DisplayAlert("Exception", $"Image is null. Check what happens in MainPage.xaml.cs. (MainViewModel.cs:30)", "OK");
-            });
+            await alertService.ShowAlertAsync("Debug", "Image is null. Check what happens in MainPage.xaml.cs. (MainViewModel.cs:30)");
 #else
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await Shell.Current.DisplayAlert("Error", "The image could not be processed. Please try again.", "ОК");
-            });
+            await alertService.ShowAlertAsync("Error", "The image could not be processed. Please try again.");
 #endif
             return;
         }
@@ -105,23 +85,14 @@ public partial class MainViewModel : ObservableObject
 
         if (response.IsSuccessStatusCode)
         {
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await Shell.Current.DisplayAlert("Success", "Image uploaded successfully.", "OK");
-            });
+            await alertService.ShowAlertAsync("Success", "Image uploaded successfully.");
         }
         else
         {
 #if DEBUG
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await Shell.Current.DisplayAlert("Error", $"Upload failed: {response.ReasonPhrase}", "OK");
-            });
+            await alertService.ShowAlertAsync("Debug", $"Upload failed: {response.ReasonPhrase}");
 #else
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await Shell.Current.DisplayAlert("Error", "The image could not be processed. Please try again.", "ОК");
-            });
+            await alertService.ShowAlertAsync("Error", "The image could not be processed. Please try again.");
 #endif
         }
     }
