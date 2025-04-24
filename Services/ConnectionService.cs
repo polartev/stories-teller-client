@@ -30,7 +30,7 @@ public class ConnectionService : ObservableObject, IConnectionService
 #if DEBUG
             alertService.ShowAlertAsync("Debug", $"{service?.ServiceName} is null. Check initialization. (MainViewModel.cs:30)");
 #else
-            alertService.ShowAlertAsync("Error", "Core components are missing. Please restart the app.");
+                    alertService.ShowAlertAsync("Error", "Core components are missing. Please restart the app.");
 #endif
             return;
         }
@@ -38,7 +38,7 @@ public class ConnectionService : ObservableObject, IConnectionService
         if (!Services.Contains(service))
         {
             Services.Add(service);
-
+            
             if (service is ObservableObject observable)
             {
                 observable.PropertyChanged += OnServicePropertyChanged;

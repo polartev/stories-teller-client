@@ -4,13 +4,39 @@ namespace Story_Teller.Services;
 
 public class AlertService : IAlertService
 {
-    public Task ShowAlertAsync(string title, string message)
+    public async Task ShowAlertAsync(string title, string message)
     {
-        MainThread.BeginInvokeOnMainThread(async () =>
+        for (int i = 0; i < 300; i++)
         {
-            await Shell.Current.DisplayAlert(title, message, "Ok");
-        });
-        return Task.CompletedTask;
+            try
+            {
+                if (Shell.Current.CurrentPage != null)
+                {
+                    if (Shell.Current.CurrentPage.IsLoaded)
+                    {
+                        break;
+                    }
+                }
+            }
+            catch { }
+
+            await Task.Delay(100);
+        }
+
+        try
+        {
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                if (Shell.Current.CurrentPage != null)
+                {
+                    if (Shell.Current.CurrentPage.IsLoaded)
+                    {
+                        await Shell.Current.DisplayAlert(title, message, "OK");
+                    }
+                }
+            });
+        }
+        catch { }
     }
 
     public Task<bool> ShowConfirmationAsync(string title, string message)

@@ -21,7 +21,7 @@ public partial class MainViewModel : ObservableObject
     private IServices.IWebSocketService webSocketService;
 
     public MainViewModel(IServices.IAlertService alertService, 
-        IServices.IConnectionService connectionService, 
+        IServices.IConnectionService connectionService,
         IServices.IWebSocketService webSocketService)
     {
         Story = new StoryViewModel(new Models.Story());
