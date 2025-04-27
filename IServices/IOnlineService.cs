@@ -10,7 +10,7 @@ public interface IOnlineService
     /// <summary>
     /// Indicates whether the service is currently online or offline.
     /// </summary>
-    bool IsOnline { get; set; }
+    bool? IsOnline { get; set; }
 
     /// <summary>
     /// The method to establish a connection to the WebSocket server.

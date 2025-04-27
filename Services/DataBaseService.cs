@@ -4,7 +4,7 @@ internal class DataBaseService : IServices.IOnlineService
 {
     public string ServiceName { get; set; } = "DataBaseService";
 
-    public bool IsOnline { get; set; } = false;
+    public bool? IsOnline { get; set; } = false;
 
     public Task ConnectAsync()
     {

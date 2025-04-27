@@ -20,7 +20,7 @@ public partial class MainViewModel : ObservableObject
     private IServices.IConnectionService connectionService;
     private IServices.IWebSocketService webSocketService;
 
-    public MainViewModel(IServices.IAlertService alertService, 
+    public MainViewModel(IServices.IAlertService alertService,
         IServices.IConnectionService connectionService,
         IServices.IWebSocketService webSocketService)
     {
@@ -30,8 +30,8 @@ public partial class MainViewModel : ObservableObject
         this.connectionService = connectionService;
         this.webSocketService = webSocketService;
 
-        webSocketService.OnMessageReceived += OnMessageReceived;
-        connectionService.StartMonitoring(webSocketService);
+        this.webSocketService.OnMessageReceived += OnMessageReceived;
+        this.connectionService.StartMonitoring(this.webSocketService);
     }
 
     private void OnMessageReceived(string message)
@@ -65,34 +65,44 @@ public partial class MainViewModel : ObservableObject
 
     private async Task OnImageChangedAsync()
     {
-        if (Image == null) {
+        try
+        {
+            if (Image == null)
+            {
 #if DEBUG
-            await alertService.ShowAlertAsync("Debug", "Image is null. Check what happens in MainPage.xaml.cs. (MainViewModel.cs:30)");
+                await alertService.ShowAlertAsync("Debug", "Image is null. Check what happens in MainPage.xaml.cs. (MainViewModel.cs:30)");
 #else
-            await alertService.ShowAlertAsync("Error", "The image could not be processed. Please try again.");
+                await alertService.ShowAlertAsync("Error", "The image could not be processed. Please try again.");
 #endif
-            return;
+                return;
+            }
+
+            var content = new MultipartFormDataContent();
+            var byteContent = new ByteArrayContent(Image);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            content.Add(byteContent, "file", $"{Username}_img_{DateTime.UtcNow:yyyyMMdd_HHmmss}");
+
+            var url = $"https://api.stories-teller.com/upload?user_id={Username}";
+            var client = new HttpClient();
+            var response = await client.PostAsync(url, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await alertService.ShowAlertAsync("Success", "Image uploaded successfully.");
+            }
+            else
+            {
+#if DEBUG
+                await alertService.ShowAlertAsync("Debug", $"Upload failed: {response.ReasonPhrase}");
+#else
+                await alertService.ShowAlertAsync("Error", "The image could not be processed. Please try again.");
+#endif
+            }
         }
-
-        var content = new MultipartFormDataContent();
-        var byteContent = new ByteArrayContent(Image);
-        byteContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-        content.Add(byteContent, "file", $"{Username}_img_{DateTime.UtcNow:yyyyMMdd_HHmmss}");
-
-        var url = $"https://api.stories-teller.com/upload?user_id={Username}";
-        var client = new HttpClient();
-        var response = await client.PostAsync(url, content);
-
-        if (response.IsSuccessStatusCode)
-        {
-            await alertService.ShowAlertAsync("Success", "Image uploaded successfully.");
-        }
-        else
+        catch (Exception ex)
         {
 #if DEBUG
-            await alertService.ShowAlertAsync("Debug", $"Upload failed: {response.ReasonPhrase}");
-#else
-            await alertService.ShowAlertAsync("Error", "The image could not be processed. Please try again.");
+            await alertService.ShowAlertAsync("Debug", $"Error: {ex.Message}");
 #endif
         }
     }

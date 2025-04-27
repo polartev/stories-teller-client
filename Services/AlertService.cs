@@ -18,7 +18,9 @@ public class AlertService : IAlertService
                     }
                 }
             }
-            catch { }
+            catch {
+                // Ignore exceptions
+            }
 
             await Task.Delay(100);
         }
@@ -36,7 +38,9 @@ public class AlertService : IAlertService
                 }
             });
         }
-        catch { }
+        catch {
+            // Ignore exceptions
+        }
     }
 
     public Task<bool> ShowConfirmationAsync(string title, string message)

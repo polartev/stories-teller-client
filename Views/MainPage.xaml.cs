@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using Story_Teller.ViewModels;
+﻿using Story_Teller.ViewModels;
 
 namespace Story_Teller.Views
 {
@@ -24,10 +23,10 @@ namespace Story_Teller.Views
                     await DisplayAlert("Debug", "MainViewModel is missing. Check App initialization. (MainPage.xaml.cs:17)", "OK");
                 });
 #else
-                   MainThread.BeginInvokeOnMainThread(async () =>
-                   {
-                       await DisplayAlert("Error", "Core components are missing. Please restart the app.", "OK");
-                   });
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("Error", "Core components are missing. Please restart the app.", "OK");
+                });
 #endif
                 return;
             }
@@ -40,10 +39,10 @@ namespace Story_Teller.Views
                     await DisplayAlert("Debug", "Media is null. Check camera capture.", "OK");
                 });
 #else
-                   MainThread.BeginInvokeOnMainThread(async () =>
-                   {
-                       await DisplayAlert("Error", "Failed to capture image. Please try again.", "OK");
-                   });
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("Error", "Failed to capture image. Please try again.", "OK");
+                });
 #endif
                 return;
             }
@@ -62,10 +61,10 @@ namespace Story_Teller.Views
                     await DisplayAlert("Exception", $"Capture failed: {ex.Message}", "OK");
                 });
 #else
-                   MainThread.BeginInvokeOnMainThread(async () =>
-                   {
-                       await DisplayAlert("Error", "The image could not be processed. Please try again.", "ОК");
-                   });
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("Error", "The image could not be processed. Please try again.", "ОК");
+                });
 #endif
             }
         }
@@ -84,10 +83,10 @@ namespace Story_Teller.Views
                     await DisplayAlert("Exception", $"CaptureImage failed: {ex.Message}", "OK");
                 });
 #else
-                   MainThread.BeginInvokeOnMainThread(async () =>
-                   {
-                       await DisplayAlert("Error", "Unable to access the camera. Please check permissions and try again.", "OK");
-                   });
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("Error", "Unable to access the camera. Please check permissions and try again.", "OK");
+                });
 #endif
             }
         }

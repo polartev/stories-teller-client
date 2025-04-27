@@ -10,15 +10,19 @@ public partial class WebSocketService : ObservableObject, IWebSocketService
     public string ServiceName => "WebSocketService";
 
     [ObservableProperty]
-    private bool isOnline = false;
+    private bool? isOnline = null;
 
     private ClientWebSocket? socket;
     private CancellationTokenSource? cts;
     private readonly string userId;
     public event Action<string>? OnMessageReceived;
 
-    public WebSocketService()
+    IAlertService alertService;
+
+    public WebSocketService(IAlertService alertService)
     {
+        this.alertService = alertService;
+
         // DELETE THESE LINES!!!! JUST FOR DEBUGGING!!! IMPLEMENT USER CLASSES AND DATABASE LATER
         userId = "artem";
         // DELETE THESE LINES!!!! JUST FOR DEBUGGING!!! IMPLEMENT USER CLASSES AND DATABASE LATER
@@ -33,34 +37,63 @@ public partial class WebSocketService : ObservableObject, IWebSocketService
         {
             var uri = new Uri($"wss://api.stories-teller.com/ws/user/{userId}");
             await socket.ConnectAsync(uri, cts.Token);
-            _ = ReceiveLoop();
-            IsOnline = true;
+
+            if (socket.State == WebSocketState.Open)
+            {
+                _ = ReceiveLoop();
+                IsOnline = true;
+            }
+            else
+            {
+                IsOnline = false;
+            }
         }
-        catch
+        catch (Exception ex)
         {
             IsOnline = false;
+#if DEBUG
+            await alertService.ShowAlertAsync("Debug", $"Connection failed: {ex.Message}");
+#endif
         }
     }
 
     private async Task ReceiveLoop()
     {
         if (socket == null || cts == null)
+        {
             return;
+        }
 
         var buffer = new byte[4096];
 
-        while (socket.State == WebSocketState.Open)
+        try
         {
-            var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), cts.Token);
-            if (result.MessageType == WebSocketMessageType.Close)
+            while (socket.State == WebSocketState.Open)
             {
-                await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
+                var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), cts.Token);
+
+                if (result.MessageType == WebSocketMessageType.Close)
+                {
+                    await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
+                    IsOnline = false;
+                    break;
+                }
+                else
+                {
+                    var msg = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                    OnMessageReceived?.Invoke(msg);
+                }
             }
-            else
-            {
-                var msg = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                OnMessageReceived?.Invoke(msg);
-            }
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            await alertService.ShowAlertAsync("Error", $"WebSocket error: {ex.Message}");
+#endif
+        }
+        finally
+        {
+            IsOnline = false;
         }
     }
 
