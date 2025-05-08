@@ -3,30 +3,129 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Story_Teller.ViewModels"
              xmlns:local="clr-namespace:Story_Teller"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:styles="clr-namespace:Story_Teller.Resources.Styles"
              x:Class="Story_Teller.Views.MainPage"
              x:DataType="vm:MainViewModel">
-    
-    <ScrollView>
-        <VerticalStackLayout Margin="50,40" Spacing="12">
-            <Border StrokeShape="RoundRectangle 10">
-                <toolkit:CameraView x:Name="Camera" MediaCaptured="Camera_MediaCaptured" />
-            </Border>
-            <Label
-                Text="{Binding Story.Title}"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
-            <Border HeightRequest="200" BackgroundColor="WhiteSmoke" 
-                    StrokeShape="RoundRectangle 10" Padding="12">
-                <ScrollView>
-                    <Label Text="{Binding Story.Content}"></Label>
-                </ScrollView>
-            </Border>
-            <ImageButton
-                Source="book.png"
-                Style="{StaticResource RoundImageButton}"
-                Clicked="ImageButton_Clicked"/>
-        </VerticalStackLayout>
-    </ScrollView>
+
+    <!-- All connected Resources must have xaml.cs class -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <styles:ButtonStyles />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!-- Main Grid for ContentPage -->
+    <Grid x:Name="main">
+        <VisualStateManager.VisualStateGroups>
+            <!-- VisualStateGroup for Width of ContentPage -->
+            <VisualStateGroup x:Name="MainWidthStates">
+                <VisualState x:Name="LargeWidthMain">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1200" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Property="ColumnDefinitions" Value="*,3*,*" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MediumWidthMain">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="800" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Property="ColumnDefinitions" Value="*,4*,*" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="SmallWidthMain">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="400" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Property="ColumnDefinitions" Value="*,9*,*" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+
+            <!-- VisualStateGroup for Height of ContentPage -->
+            <VisualStateGroup x:Name="MainHeightStates">
+                <VisualState x:Name="LargeHeightMain">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="600" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Property="RowDefinitions" Value="3*,2*,*" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MediumHeightMain">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="500" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Property="RowDefinitions" Value="4*,2*,120" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="SmallHeightMain">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="400" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Property="RowDefinitions" Value="5*,2*,100" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Margin="10" StrokeShape="RoundRectangle 10" 
+                BackgroundColor="WhiteSmoke" Padding="12">
+            <ScrollView>
+                <Label Text="{Binding Story.Content}"></Label>
+            </ScrollView>
+        </Border>
+
+        <Border Grid.Column="1" Grid.Row="2" Margin="5" StrokeShape="RoundRectangle 10" BackgroundColor="WhiteSmoke">
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="55"></ColumnDefinition>
+                    <ColumnDefinition Width="55"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="55"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <ImageButton
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    WidthRequest="44"
+                    HeightRequest="44"
+                    Source="image_photo.png"
+                    Style="{StaticResource RoundedImageButton}" 
+                    Clicked="CameraMenuButton_Clicked"/>
+
+                <ImageButton
+                    Grid.Column="2"
+                    Grid.Row="1"
+                    WidthRequest="55"
+                    HeightRequest="55"
+                    Source="book.png"
+                    Style="{StaticResource CircleImageButton}"
+                    Command="{Binding StoryButtonTappedCommand}"/>
+            </Grid>
+        </Border>
+
+    </Grid>
 
 </ContentPage>

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Net.Http.Headers;
 
 namespace Story_Teller.ViewModels;
@@ -34,36 +35,8 @@ public partial class MainViewModel : ObservableObject
         this.connectionService.StartMonitoring(this.webSocketService);
     }
 
-    private void OnMessageReceived(string message)
-    {
-        if (string.IsNullOrEmpty(message) || Story == null)
-        {
-            return;
-        }
-
-        string content = "";
-
-        if (message.StartsWith("new_description:"))
-        {
-            content = message.Split(':')[1];
-        }
-        else
-        {
-            return;
-        }
-
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            Story.Content = content;
-        });
-    }
-
-    partial void OnImageChanged(byte[]? value)
-    {
-        _ = OnImageChangedAsync();
-    }
-
-    private async Task OnImageChangedAsync()
+    [RelayCommand]
+    private async Task OnStoryButtonTappedAsync()
     {
         try
         {
@@ -105,5 +78,29 @@ public partial class MainViewModel : ObservableObject
             await alertService.ShowAlertAsync("Debug", $"Error: {ex.Message}");
 #endif
         }
+    }
+
+    private void OnMessageReceived(string message)
+    {
+        if (string.IsNullOrEmpty(message) || Story == null)
+        {
+            return;
+        }
+
+        string content = "";
+
+        if (message.StartsWith("new_description:"))
+        {
+            content = message.Split(':')[1];
+        }
+        else
+        {
+            return;
+        }
+
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            Story.Content = content;
+        });
     }
 }
