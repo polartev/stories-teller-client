@@ -1,20 +1,11 @@
-﻿using Story_Teller.ViewModels;
+﻿using CommunityToolkit.Maui.Views;
+using Story_Teller.ViewModels;
 using System.Diagnostics;
 
 namespace Story_Teller.Views;
 
 public partial class MainPage : ContentPage
 {
-    string GetCurrentWidthState(double width, string name)
-    => width >= 1200 ? $"LargeWidth{name}"
-       : width >= 800 ? $"MediumWidth{name}"
-                   : $"SmallWidth{name}";
-
-    string GetCurrentHeightState(double height, string name)
-        => height >= 600 ? $"LargeHeight{name}"
-           : height >= 500 ? $"MediumHeight{name}"
-                      : $"SmallHeight{name}";
-
     private MainViewModel? mainViewModel;
 
     public MainPage(MainViewModel mainViewModel)
@@ -23,6 +14,16 @@ public partial class MainPage : ContentPage
         BindingContext = mainViewModel;
         this.mainViewModel = mainViewModel;
     }
+
+    string GetCurrentWidthState(double width, string name)
+=> width >= 1200 ? $"LargeWidth{name}"
+   : width >= 800 ? $"MediumWidth{name}"
+               : $"SmallWidth{name}";
+
+    string GetCurrentHeightState(double height, string name)
+        => height >= 600 ? $"LargeHeight{name}"
+           : height >= 500 ? $"MediumHeight{name}"
+                      : $"SmallHeight{name}";
 
     protected override void OnAppearing()
     {
@@ -34,11 +35,12 @@ public partial class MainPage : ContentPage
 
     private async void CameraMenuButton_Clicked(object sender, EventArgs e)
     {
-        string result = await DisplayActionSheet(null, null, null, "Photo", "Camera");
+        var result = await this.ShowPopupAsync(new Popups.ImageSourcePopup());
+            //DisplayActionSheet(null, null, null, "Photo", "Camera");
 
         switch (result as string)
         {
-            case "Photo":
+            case "Photos":
                 await PickFileAsync();
                 break;
             case "Camera":

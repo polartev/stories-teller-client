@@ -1,5 +1,6 @@
 ﻿using Story_Teller.ServiceCollections;
 using Microsoft.Extensions.Logging;
+using CommunityToolkit.Maui;
 
 namespace Story_Teller;
 
@@ -10,6 +11,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

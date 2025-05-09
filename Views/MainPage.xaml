@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Story_Teller.ViewModels"
              xmlns:local="clr-namespace:Story_Teller"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:styles="clr-namespace:Story_Teller.Resources.Styles"
              x:Class="Story_Teller.Views.MainPage"
              x:DataType="vm:MainViewModel">
@@ -15,7 +16,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </ContentPage.Resources>
-
+    
     <!-- Main Grid for ContentPage -->
     <Grid x:Name="main">
         <VisualStateManager.VisualStateGroups>
@@ -112,7 +113,7 @@
                     WidthRequest="44"
                     HeightRequest="44"
                     Source="image_photo.png"
-                    Style="{StaticResource RoundedImageButton}" 
+                    Style="{StaticResource RoundedImageButton}"
                     Clicked="CameraMenuButton_Clicked"/>
 
                 <ImageButton

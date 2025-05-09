@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:popups="clr-namespace:Story_Teller.Views.Popups"
+               xmlns:styles="clr-namespace:Story_Teller.Resources.Styles"
+               x:Class="Story_Teller.Views.Popups.ImageSourcePopup">
+
+    <toolkit:Popup.Resources>
+        <Style TargetType="{x:Type popups:ImageSourcePopup}">
+            <Setter Property="Size" Value="150,115" />
+            <Setter Property="Color" Value="Transparent" />
+            <Setter Property="CanBeDismissedByTappingOutsideOfPopup" Value="True" />
+        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <styles:ButtonStyles />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </toolkit:Popup.Resources>
+
+    <Border
+        StrokeShape="RoundRectangle 10"
+        BackgroundColor="White">
+        <VerticalStackLayout Padding="10" Spacing="5">
+            <Button
+            HeightRequest="44"
+            WidthRequest="130"
+            Text="Photos"
+            ImageSource="image.png"
+            ContentLayout="Left, 10"
+            Style="{StaticResource RoundedButton}"
+            Clicked="OnVariantButtonClicked" />
+            <Button
+            HeightRequest="44"
+            WidthRequest="130"
+            Text="Camera"
+            ImageSource="camera.png"
+            ContentLayout="Left, 10"
+            Style="{StaticResource RoundedButton}"
+            Clicked="OnVariantButtonClicked" />
+        </VerticalStackLayout>
+    </Border>
+    
+</toolkit:Popup>
