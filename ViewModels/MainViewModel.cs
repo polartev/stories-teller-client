@@ -6,13 +6,11 @@ namespace Story_Teller.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
-    // DELETE THESE LINES!!!! JUST FOR DEBUGGING!!! IMPLEMENT USER CLASSES AND DATABASE LATER
-    private string Username => "artem";
-
-    // DELETE THESE LINES!!!! JUST FOR DEBUGGING!!! IMPLEMENT USER CLASSES AND DATABASE LATER
-
     [ObservableProperty]
     private byte[]? image;
+
+    [ObservableProperty]
+    private UserViewModel? user;
 
     [ObservableProperty]
     private StoryViewModel? story;
@@ -23,9 +21,12 @@ public partial class MainViewModel : ObservableObject
 
     public MainViewModel(IServices.IAlertService alertService,
         IServices.IConnectionService connectionService,
-        IServices.IWebSocketService webSocketService)
+        IServices.IWebSocketService webSocketService,
+        UserViewModel userViewModel,
+        StoryViewModel storyViewModel)
     {
-        Story = new StoryViewModel(new Models.Story());
+        User = userViewModel;
+        Story = storyViewModel;
 
         this.alertService = alertService;
         this.connectionService = connectionService;
@@ -53,9 +54,9 @@ public partial class MainViewModel : ObservableObject
             var content = new MultipartFormDataContent();
             var byteContent = new ByteArrayContent(Image);
             byteContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-            content.Add(byteContent, "file", $"{Username}_img_{DateTime.UtcNow:yyyyMMdd_HHmmss}");
+            content.Add(byteContent, "file", $"{User.Name}_img_{DateTime.UtcNow:yyyyMMdd_HHmmss}");
 
-            var url = $"https://api.stories-teller.com/upload?user_id={Username}";
+            var url = $"https://api.stories-teller.com/upload?user_id={User.Name}";
             var client = new HttpClient();
             var response = await client.PostAsync(url, content);
 

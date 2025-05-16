@@ -36,7 +36,6 @@ public partial class MainPage : ContentPage
     private async void CameraMenuButton_Clicked(object sender, EventArgs e)
     {
         var result = await this.ShowPopupAsync(new Popups.ImageSourcePopup());
-            //DisplayActionSheet(null, null, null, "Photo", "Camera");
 
         switch (result as string)
         {

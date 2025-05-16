@@ -14,18 +14,16 @@ public partial class WebSocketService : ObservableObject, IWebSocketService
 
     private ClientWebSocket? socket;
     private CancellationTokenSource? cts;
-    private readonly string userId;
+
     public event Action<string>? OnMessageReceived;
 
     IAlertService alertService;
+    IUserService userService;
 
-    public WebSocketService(IAlertService alertService)
+    public WebSocketService(IAlertService alertService, IUserService userService)
     {
         this.alertService = alertService;
-
-        // DELETE THESE LINES!!!! JUST FOR DEBUGGING!!! IMPLEMENT USER CLASSES AND DATABASE LATER
-        userId = "artem";
-        // DELETE THESE LINES!!!! JUST FOR DEBUGGING!!! IMPLEMENT USER CLASSES AND DATABASE LATER
+        this.userService = userService;
     }
 
     public async Task ConnectAsync()
@@ -35,7 +33,7 @@ public partial class WebSocketService : ObservableObject, IWebSocketService
 
         try
         {
-            var uri = new Uri($"wss://api.stories-teller.com/ws/user/{userId}");
+            var uri = new Uri($"wss://api.stories-teller.com/ws/user/{userService.User.Name}");
             await socket.ConnectAsync(uri, cts.Token);
 
             if (socket.State == WebSocketState.Open)
