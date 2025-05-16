@@ -10,6 +10,9 @@ public partial class MainViewModel : ObservableObject
     private byte[]? image;
 
     [ObservableProperty]
+    private ImageSource? imageSource;
+
+    [ObservableProperty]
     private UserViewModel? user;
 
     [ObservableProperty]
@@ -34,6 +37,29 @@ public partial class MainViewModel : ObservableObject
 
         this.webSocketService.OnMessageReceived += OnMessageReceived;
         this.connectionService.StartMonitoring(this.webSocketService);
+    }
+
+    partial void OnImageChanged(byte[]? value)
+    {
+        if (image != null)
+        {
+            ImageSource = ImageSource.FromStream(() => new MemoryStream(image));
+        }
+        else
+        {
+            ImageSource = null;
+        }
+    }
+
+    [RelayCommand]
+    private Task OnImageButtonTapped()
+    {
+        if (Image != null)
+        {
+            Image = null;
+        }
+
+        return Task.CompletedTask;
     }
 
     [RelayCommand]

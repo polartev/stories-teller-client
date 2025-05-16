@@ -99,6 +99,7 @@
             <Grid Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="44"></ColumnDefinition>
                     <ColumnDefinition Width="55"></ColumnDefinition>
                     <ColumnDefinition Width="55"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
@@ -110,14 +111,42 @@
                 <ImageButton
                     Grid.Column="1"
                     Grid.Row="1"
+                    Padding="12"
+                    CornerRadius="12"
+                    WidthRequest="44"
+                    HeightRequest="44"
+                    Source="cross.png"
+                    Style="{StaticResource RoundedImageButton}"
+                    Command="{Binding ImageButtonTappedCommand}">
+                    <ImageButton.IsVisible>
+                        <Binding Path="ImageSource" Converter="{StaticResource NotNullToBoolConverter}" />
+                    </ImageButton.IsVisible>
+                </ImageButton>
+
+                <ImageButton
+                    Grid.Column="2"
+                    Grid.Row="1"
                     WidthRequest="44"
                     HeightRequest="44"
                     Source="image_photo.png"
                     Style="{StaticResource RoundedImageButton}"
-                    Clicked="CameraMenuButton_Clicked"/>
+                    Clicked="CameraMenuButton_Clicked">
+                    <ImageButton.Triggers>
+                        <DataTrigger TargetType="ImageButton"
+                             Binding="{Binding ImageSource}"
+                             Value="{x:Null}">
+                            <Setter Property="Source" Value="image_photo.png" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="ImageButton"
+                             Binding="{Binding ImageSource, Converter={StaticResource NotNullToBoolConverter}}"
+                             Value="True">
+                            <Setter Property="Source" Value="{Binding ImageSource}" />
+                        </DataTrigger>
+                    </ImageButton.Triggers>
+                </ImageButton>
 
                 <ImageButton
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Grid.Row="1"
                     WidthRequest="55"
                     HeightRequest="55"
