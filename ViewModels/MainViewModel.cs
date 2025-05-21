@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace Story_Teller.ViewModels;
 
@@ -88,7 +90,17 @@ public partial class MainViewModel : ObservableObject
 
             if (response.IsSuccessStatusCode)
             {
-                await alertService.ShowAlertAsync("Success", "Image uploaded successfully.");
+                var returnedMessage = await response.Content.ReadFromJsonAsync<Models.Message>();
+                if (returnedMessage != null)
+                {
+                    if (returnedMessage.Type == Models.MessageType.success)
+                    {
+                        if (returnedMessage.Payload.Action == "file_uploaded")
+                        {
+                            await alertService.ShowAlertAsync("Success", "Image uploaded successfully.");
+                        }
+                    }
+                }
             }
             else
             {
@@ -107,27 +119,70 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    private void OnMessageReceived(string message)
+    private async void OnMessageReceived(string raw)
     {
-        if (string.IsNullOrEmpty(message) || Story == null)
+        if (string.IsNullOrEmpty(raw) || Story == null)
         {
             return;
         }
 
-        string content = "";
+        Models.Message? message;
 
-        if (message.StartsWith("new_description:"))
+        try
         {
-            content = message.Split(':')[1];
+            message = JsonSerializer.Deserialize<Models.Message>(raw);
         }
-        else
+        catch (Exception ex)
         {
+            Console.WriteLine($"Failed to deserialize message: {ex.Message}");
             return;
         }
 
-        MainThread.BeginInvokeOnMainThread(() =>
+        switch (message?.Type)
         {
-            Story.Content = content;
-        });
+            case Models.MessageType.task:
+                if (message.Payload.Action == "load_description")
+                {
+                    var data = message.Payload.Data;
+                    if (data.TryGetValue("filename", out var filenameObj))
+                    {
+                        string? filename = filenameObj?.ToString();
+                        if (data.TryGetValue("username", out var usernameObj))
+                        {
+                            string? username = usernameObj?.ToString();
+                            if (User.Name != username)
+                            {
+                                return;
+                            }
+                        }
+                        var url = $"https://api.stories-teller.com/descriptions/{filename}?user_id={User.Name}";
+                        var client = new HttpClient();
+                        var response = await client.GetAsync(url);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var responseBody = await response.Content.ReadAsStringAsync();
+                            var json = JsonDocument.Parse(responseBody);
+
+                            if (json.RootElement.TryGetProperty("description", out var desccriptionObj))
+                            {
+                                string description = desccriptionObj.GetString()!;
+                                Story.Content = description;
+                            }
+                        }
+                        else
+                        {
+#if DEBUG
+                            await alertService.ShowAlertAsync("Debug", $"Error: {response.StatusCode}, {response.ReasonPhrase}");
+#else
+                            await alertService.ShowAlertAsync("Error", "Please try again.");
+#endif
+                        }
+                    }
+                }
+                break;
+            default:
+                break;
+        }
     }
 }
