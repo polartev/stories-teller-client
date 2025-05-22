@@ -21,8 +21,12 @@ public static class MauiProgram
         builder.Services.AddUIServices();
 
         builder.Services.AddSingleton<IServices.IUserService, Services.UserService>();
+        builder.Services.AddSingleton<IServices.ILanguageService, Services.LanguageService>();
         builder.Services.AddSingleton<IServices.IWebSocketService, Services.WebSocketService>();
         builder.Services.AddSingleton<IServices.IConnectionService, Services.ConnectionService>();
+
+        builder.Services.AddSingleton<ViewModels.FlyoutFooterViewModel>();
+        builder.Services.AddSingleton<AppShell>();
 
         builder.Services.AddSingleton<Models.User>();
         builder.Services.AddSingleton<ViewModels.UserViewModel>();

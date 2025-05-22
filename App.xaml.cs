@@ -9,6 +9,23 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        return new Window(new AppShell());
+        if (Current == null)
+        {
+            throw new InvalidOperationException("Current application instance is null.");
+        }
+
+        var mauiContext = Current.Handler?.MauiContext;
+        if (mauiContext == null)
+        {
+            throw new InvalidOperationException("MauiContext is null.");
+        }
+
+        var appShell = mauiContext.Services.GetService<AppShell>();
+        if (appShell == null)
+        {
+            throw new InvalidOperationException("AppShell service is not registered.");
+        }
+
+        return new Window(appShell);
     }
 }

@@ -2,7 +2,9 @@
 
 public partial class AppShell : Shell
 {
-    public AppShell()
+    private ViewModels.FlyoutFooterViewModel flyoutFooterViewModel;
+
+    public AppShell(ViewModels.FlyoutFooterViewModel flyoutFooterViewModel)
     {
         InitializeComponent();
 
@@ -11,5 +13,8 @@ public partial class AppShell : Shell
             // Set the default theme to light if Application.Current is not null
             Application.Current.UserAppTheme = AppTheme.Light;
         }
+
+        BindingContext = flyoutFooterViewModel;
+        this.flyoutFooterViewModel = flyoutFooterViewModel;
     }
 }

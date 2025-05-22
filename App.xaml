@@ -12,6 +12,9 @@
                 <ResourceDictionary>
                     <converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
                 </ResourceDictionary>
+                <ResourceDictionary>
+                    <converters:LanguageToIsEnabledConverter x:Key="LanguageToIsEnabledConverter" />
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

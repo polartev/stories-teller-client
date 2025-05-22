@@ -5,12 +5,63 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Story_Teller"
     xmlns:views="clr-namespace:Story_Teller.Views"
+    xmlns:styles="clr-namespace:Story_Teller.Resources.Styles"
+    xmlns:viewmodels="clr-namespace:Story_Teller.ViewModels"
     Shell.FlyoutBehavior="Flyout"
     Title="Stories Teller">
 
+    <!-- All connected Resources must have xaml.cs class -->
+    <Shell.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <styles:ButtonStyles />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Shell.Resources>
+    
     <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate views:MainPage}"
         Route="MainPage" />
 
+    <!-- Footer with Language Buttons -->
+    <Shell.FlyoutFooterTemplate>
+        <DataTemplate x:DataType="viewmodels:FlyoutFooterViewModel">
+            <Border StrokeShape="RoundRectangle 10" BackgroundColor="WhiteSmoke">
+                <Grid Padding="10" ColumnSpacing="10" ColumnDefinitions="*,*">
+                    <Button 
+                        Grid.Column="0"
+                        Text="UA"
+                        TextColor="Gray"
+                        Style="{StaticResource RoundedImageButton}"
+                        FontAttributes="Bold"
+                        Command="{Binding SetLanguageCommand}"
+                        CommandParameter="ua"
+                        IsEnabled="{Binding CurrentLanguage, ConverterParameter='ua', Converter={StaticResource LanguageToIsEnabledConverter}}">
+                        <Button.Triggers>
+                            <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </Button.Triggers>
+                    </Button>
+
+                    <Button 
+                        Grid.Column="1"
+                        Text="ENG"
+                        TextColor="Gray"
+                        Style="{StaticResource RoundedImageButton}"
+                        FontAttributes="Bold"
+                        Command="{Binding SetLanguageCommand}"
+                        CommandParameter="eng"
+                        IsEnabled="{Binding CurrentLanguage, ConverterParameter='eng', Converter={StaticResource LanguageToIsEnabledConverter}}">
+                        <Button.Triggers>
+                            <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </Button.Triggers>
+                    </Button>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </Shell.FlyoutFooterTemplate>
 </Shell>

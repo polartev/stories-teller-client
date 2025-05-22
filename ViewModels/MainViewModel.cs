@@ -21,10 +21,12 @@ public partial class MainViewModel : ObservableObject
     private StoryViewModel? story;
 
     private IServices.IAlertService alertService;
+    private IServices.ILanguageService languageService;
     private IServices.IConnectionService connectionService;
     private IServices.IWebSocketService webSocketService;
 
     public MainViewModel(IServices.IAlertService alertService,
+        IServices.ILanguageService languageService,
         IServices.IConnectionService connectionService,
         IServices.IWebSocketService webSocketService,
         UserViewModel userViewModel,
@@ -34,6 +36,7 @@ public partial class MainViewModel : ObservableObject
         Story = storyViewModel;
 
         this.alertService = alertService;
+        this.languageService = languageService;
         this.connectionService = connectionService;
         this.webSocketService = webSocketService;
 
@@ -83,6 +86,7 @@ public partial class MainViewModel : ObservableObject
             var byteContent = new ByteArrayContent(Image);
             byteContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
             content.Add(byteContent, "file", $"{User.Name}_img_{DateTime.UtcNow:yyyyMMdd_HHmmss}");
+            content.Add(new StringContent(languageService.GetLanguage()), "language");
 
             var url = $"https://api.stories-teller.com/upload?user_id={User.Name}";
             var client = new HttpClient();
