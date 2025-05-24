@@ -4,15 +4,26 @@ using System.Diagnostics;
 
 namespace Story_Teller.Views;
 
-public partial class MainPage : ContentPage
+[QueryProperty(nameof(Story), "Story")]
+public partial class EditorPage : ContentPage
 {
-    private MainViewModel? mainViewModel;
+    public StoryViewModel? Story
+    {
+        get => editorViewModel?.Story;
+        set
+        {
+            if (editorViewModel != null && value != null)
+                editorViewModel.Story = value;
+        }
+    }
 
-    public MainPage(MainViewModel mainViewModel)
+    private EditorViewModel? editorViewModel;
+
+    public EditorPage(EditorViewModel editorViewModel)
     {
         InitializeComponent();
-        BindingContext = mainViewModel;
-        this.mainViewModel = mainViewModel;
+        BindingContext = editorViewModel;
+        this.editorViewModel = editorViewModel;
     }
 
     string GetCurrentWidthState(double width, string name)
@@ -50,7 +61,7 @@ public partial class MainPage : ContentPage
 
     private async Task PickFileAsync()
     {
-        if (mainViewModel == null)
+        if (editorViewModel == null)
         {
 #if DEBUG
             MainThread.BeginInvokeOnMainThread(async () =>
@@ -80,7 +91,7 @@ public partial class MainPage : ContentPage
 
                 using var memoryStream = new MemoryStream();
                 await stream.CopyToAsync(memoryStream);
-                mainViewModel.Image = memoryStream.ToArray();
+                editorViewModel.Image = memoryStream.ToArray();
             }
         }
         catch (Exception ex)
@@ -101,7 +112,7 @@ public partial class MainPage : ContentPage
 
     private async Task TakePhotoAsync()
     {
-        if (mainViewModel == null)
+        if (editorViewModel == null)
         {
 #if DEBUG
             MainThread.BeginInvokeOnMainThread(async () =>
@@ -128,7 +139,7 @@ public partial class MainPage : ContentPage
 
                     using var memoryStream = new MemoryStream();
                     await stream.CopyToAsync(memoryStream);
-                    mainViewModel.Image = memoryStream.ToArray();
+                    editorViewModel.Image = memoryStream.ToArray();
                 }
             }
         }

@@ -5,8 +5,8 @@
              xmlns:local="clr-namespace:Story_Teller"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:styles="clr-namespace:Story_Teller.Resources.Styles"
-             x:Class="Story_Teller.Views.MainPage"
-             x:DataType="vm:MainViewModel">
+             x:Class="Story_Teller.Views.EditorPage"
+             x:DataType="vm:EditorViewModel">
 
     <!-- All connected Resources must have xaml.cs class -->
     <ContentPage.Resources>

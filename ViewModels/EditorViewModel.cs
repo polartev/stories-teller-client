@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Story_Teller.ViewModels;
 
-public partial class MainViewModel : ObservableObject
+public partial class EditorViewModel : ObservableObject
 {
     [ObservableProperty]
     private byte[]? image;
@@ -25,15 +25,13 @@ public partial class MainViewModel : ObservableObject
     private IServices.IConnectionService connectionService;
     private IServices.IWebSocketService webSocketService;
 
-    public MainViewModel(IServices.IAlertService alertService,
+    public EditorViewModel(IServices.IAlertService alertService,
         IServices.ILanguageService languageService,
         IServices.IConnectionService connectionService,
         IServices.IWebSocketService webSocketService,
-        UserViewModel userViewModel,
-        StoryViewModel storyViewModel)
+        UserViewModel userViewModel)
     {
         User = userViewModel;
-        Story = storyViewModel;
 
         this.alertService = alertService;
         this.languageService = languageService;

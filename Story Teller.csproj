@@ -70,9 +70,15 @@
 	  <Compile Update="Resources\Styles\ButtonStyles.xaml.cs">
 	    <DependentUpon>ButtonStyles.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\EditorPage.xaml.cs">
+	    <DependentUpon>EditorPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\BookshelfPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Popups\ImageSourcePopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

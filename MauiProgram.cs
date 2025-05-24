@@ -24,6 +24,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IServices.ILanguageService, Services.LanguageService>();
         builder.Services.AddSingleton<IServices.IWebSocketService, Services.WebSocketService>();
         builder.Services.AddSingleton<IServices.IConnectionService, Services.ConnectionService>();
+        builder.Services.AddSingleton<IServices.IStoryStorageService, Services.StoryStorageService>();
 
         builder.Services.AddSingleton<ViewModels.FlyoutFooterViewModel>();
         builder.Services.AddSingleton<AppShell>();
@@ -31,11 +32,11 @@ public static class MauiProgram
         builder.Services.AddSingleton<Models.User>();
         builder.Services.AddSingleton<ViewModels.UserViewModel>();
 
-        builder.Services.AddSingleton<Models.Story>();
-        builder.Services.AddSingleton<ViewModels.StoryViewModel>();
+        builder.Services.AddSingleton<ViewModels.BookshelfViewModel>();
+        builder.Services.AddSingleton<Views.BookshelfPage>();
 
-        builder.Services.AddSingleton<ViewModels.MainViewModel>();
-        builder.Services.AddSingleton<Views.MainPage>();
+        builder.Services.AddSingleton<ViewModels.EditorViewModel>();
+        builder.Services.AddSingleton<Views.EditorPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

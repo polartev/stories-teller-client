@@ -16,5 +16,7 @@ public partial class AppShell : Shell
 
         BindingContext = flyoutFooterViewModel;
         this.flyoutFooterViewModel = flyoutFooterViewModel;
+
+        Routing.RegisterRoute(nameof(Views.EditorPage), typeof(Views.EditorPage));
     }
 }

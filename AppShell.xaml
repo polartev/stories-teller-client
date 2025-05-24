@@ -20,9 +20,9 @@
     </Shell.Resources>
     
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate views:MainPage}"
-        Route="MainPage" />
+        Title="Bookshelf"
+        ContentTemplate="{DataTemplate views:BookshelfPage}"
+        Route="BookshelfPage" />
 
     <!-- Footer with Language Buttons -->
     <Shell.FlyoutFooterTemplate>
@@ -33,7 +33,7 @@
                         Grid.Column="0"
                         Text="UA"
                         TextColor="Gray"
-                        Style="{StaticResource RoundedImageButton}"
+                        Style="{StaticResource RoundedButton}"
                         FontAttributes="Bold"
                         Command="{Binding SetLanguageCommand}"
                         CommandParameter="ua"
@@ -49,7 +49,7 @@
                         Grid.Column="1"
                         Text="ENG"
                         TextColor="Gray"
-                        Style="{StaticResource RoundedImageButton}"
+                        Style="{StaticResource RoundedButton}"
                         FontAttributes="Bold"
                         Command="{Binding SetLanguageCommand}"
                         CommandParameter="eng"
