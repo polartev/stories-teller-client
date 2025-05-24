@@ -26,11 +26,13 @@ public partial class EditorViewModel : ObservableObject, IDisposable
     private IServices.ILanguageService languageService;
     private IServices.IConnectionService connectionService;
     private IServices.IWebSocketService webSocketService;
+    private IServices.IHttpsService httpsPostService;
 
     public EditorViewModel(IServices.IAlertService alertService,
         IServices.ILanguageService languageService,
         IServices.IConnectionService connectionService,
         IServices.IWebSocketService webSocketService,
+        IServices.IHttpsService httpsPostService,
         UserViewModel userViewModel)
     {
         User = userViewModel;
@@ -39,6 +41,7 @@ public partial class EditorViewModel : ObservableObject, IDisposable
         this.languageService = languageService;
         this.connectionService = connectionService;
         this.webSocketService = webSocketService;
+        this.httpsPostService = httpsPostService;
 
         this.webSocketService.OnMessageReceived += OnMessageReceived;
 
@@ -94,8 +97,7 @@ public partial class EditorViewModel : ObservableObject, IDisposable
             content.Add(new StringContent(languageService.GetLanguage()), "language");
 
             var url = $"https://api.stories-teller.com/upload?user_id={User.Name}";
-            var client = new HttpClient();
-            var response = await client.PostAsync(url, content);
+            var response = await httpsPostService.HttpClient.PostAsync(url, content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -170,8 +172,7 @@ public partial class EditorViewModel : ObservableObject, IDisposable
                             }
                         }
                         var url = $"https://api.stories-teller.com/descriptions/{filename}?user_id={User.Name}";
-                        var client = new HttpClient();
-                        var response = await client.GetAsync(url);
+                        var response = await httpsPostService.HttpClient.GetAsync(url);
 
                         if (response.IsSuccessStatusCode)
                         {

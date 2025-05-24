@@ -23,6 +23,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IServices.IUserService, Services.UserService>();
         builder.Services.AddSingleton<IServices.ILanguageService, Services.LanguageService>();
         builder.Services.AddSingleton<IServices.IWebSocketService, Services.WebSocketService>();
+        builder.Services.AddSingleton<IServices.IHttpsService, Services.HttpsService>();
         builder.Services.AddSingleton<IServices.IConnectionService, Services.ConnectionService>();
         builder.Services.AddSingleton<IServices.IStoryStorageService, Services.StoryStorageService>();
 
