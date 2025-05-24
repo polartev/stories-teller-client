@@ -35,8 +35,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<ViewModels.BookshelfViewModel>();
         builder.Services.AddSingleton<Views.BookshelfPage>();
 
-        builder.Services.AddSingleton<ViewModels.EditorViewModel>();
-        builder.Services.AddSingleton<Views.EditorPage>();
+        builder.Services.AddTransient<ViewModels.EditorViewModel>();
+        builder.Services.AddTransient<Views.EditorPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

@@ -158,4 +158,16 @@ public partial class EditorPage : ContentPage
 #endif
         }
     }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        if (BindingContext is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
+
+        BindingContext = null;
+    }
 }

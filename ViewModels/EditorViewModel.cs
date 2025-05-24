@@ -6,8 +6,10 @@ using System.Text.Json;
 
 namespace Story_Teller.ViewModels;
 
-public partial class EditorViewModel : ObservableObject
+public partial class EditorViewModel : ObservableObject, IDisposable
 {
+    private bool disposed = false;
+
     [ObservableProperty]
     private byte[]? image;
 
@@ -39,7 +41,12 @@ public partial class EditorViewModel : ObservableObject
         this.webSocketService = webSocketService;
 
         this.webSocketService.OnMessageReceived += OnMessageReceived;
-        this.connectionService.StartMonitoring(this.webSocketService);
+
+        bool isOnline = webSocketService.IsOnline == null ? false : (bool)webSocketService.IsOnline;
+        if (!isOnline)
+        {
+            this.connectionService.StartMonitoring(this.webSocketService);
+        }
     }
 
     partial void OnImageChanged(byte[]? value)
@@ -99,6 +106,11 @@ public partial class EditorViewModel : ObservableObject
                     {
                         if (returnedMessage.Payload.Action == "file_uploaded")
                         {
+                            if (Image != null)
+                            {
+                                Image = null;
+                            }
+
                             await alertService.ShowAlertAsync("Success", "Image uploaded successfully.");
                         }
                     }
@@ -186,5 +198,39 @@ public partial class EditorViewModel : ObservableObject
             default:
                 break;
         }
+    }
+
+    /// <summary>
+    /// Disposes the CameraViewModel and releases resources.
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Disposes the resources used by the CameraViewModel.
+    /// </summary>
+    /// <param name="disposing"></param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposed)
+        {
+            if (disposing)
+            {
+                this.webSocketService.OnMessageReceived -= OnMessageReceived;
+            }
+
+            disposed = true;
+        }
+    }
+
+    /// <summary>
+    /// Destructor for CameraViewModel.
+    /// </summary>
+    ~EditorViewModel()
+    {
+        Dispose(disposing: false);
     }
 }
