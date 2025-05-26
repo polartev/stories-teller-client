@@ -2,7 +2,9 @@
 
 public interface IStoryStorageService
 {
-    Task<List<Models.Story>> LoadStoriesAsync();
+    Task<List<Models.Story>> LoadAsync();
 
-    Task SaveStoriesAsync(IEnumerable<Models.Story> stories);
+    Task SaveAsync(IEnumerable<Models.Story> stories);
+
+    Task DeleteAsync(Models.Story story);
 }

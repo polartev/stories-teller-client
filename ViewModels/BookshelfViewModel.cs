@@ -20,7 +20,7 @@ public partial class BookshelfViewModel : ObservableObject
 
     private async void LoadAsync()
     {
-        var loaded = await storyStorageService.LoadStoriesAsync();
+        var loaded = await storyStorageService.LoadAsync();
         Stories.Clear();
         foreach (var story in loaded)
         {
@@ -31,15 +31,21 @@ public partial class BookshelfViewModel : ObservableObject
     private async void SaveAllAsync()
     {
         var models = Stories.Select(story => story.ToModel());
-        await storyStorageService.SaveStoriesAsync(models);
+        await storyStorageService.SaveAsync(models);
     }
 
     public ICommand AddStoryCommand => new Command(() =>
     {
-        var newStory = new StoryViewModel(new Models.Story("New Story", ""), SaveAllAsync);
+        var newStory = new StoryViewModel(new Models.Story(Guid.NewGuid().ToString(), "New Story", ""), SaveAllAsync);
         Stories.Add(newStory);
         SaveAllAsync();
     });
+
+    public async Task DeleteBookAsync(StoryViewModel storyVM)
+    {
+        Stories.Remove(storyVM);
+        await storyStorageService.DeleteAsync(storyVM.ToModel());
+    }
 
     public ICommand OpenStoryCommand => new Command<StoryViewModel>(async (story) =>
     {

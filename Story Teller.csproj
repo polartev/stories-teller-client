@@ -79,6 +79,9 @@
 	  <MauiXaml Update="Views\BookshelfPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\Popups\EditBookPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Popups\ImageSourcePopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

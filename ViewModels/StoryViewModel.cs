@@ -7,6 +7,9 @@ public partial class StoryViewModel : ObservableObject
     private readonly Action onChanged;
 
     [ObservableProperty]
+    private string? sid;
+
+    [ObservableProperty]
     private string? title;
 
     [ObservableProperty]
@@ -14,6 +17,7 @@ public partial class StoryViewModel : ObservableObject
 
     public StoryViewModel(Models.Story story, Action onChanged)
     {
+        Sid = story.Sid;
         Title = story.Title;
         Content = story.Content;
         this.onChanged = onChanged;
@@ -29,5 +33,6 @@ public partial class StoryViewModel : ObservableObject
         onChanged?.Invoke();
     }
 
-    public Models.Story ToModel() => new(Title ?? "", Content ?? "");
+    public Models.Story ToModel() =>
+        new(Sid ?? Guid.NewGuid().ToString(), Title ?? "", Content ?? "");
 }

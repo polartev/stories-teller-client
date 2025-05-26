@@ -47,7 +47,7 @@
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
-
+            
             <!-- VisualStateGroup for Height of ContentPage -->
             <VisualStateGroup x:Name="MainHeightStates">
                 <VisualState x:Name="LargeHeightMain">
@@ -76,7 +76,7 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="3*"></ColumnDefinition>
@@ -87,7 +87,7 @@
             <RowDefinition Height="2*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-
+        
         <ScrollView Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="3" VerticalOptions="Start">
             <Border Margin="10,10,10,120" StrokeShape="RoundRectangle 10" 
                     BackgroundColor="WhiteSmoke" Padding="12">
@@ -107,7 +107,7 @@
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="55"></RowDefinition>
                 </Grid.RowDefinitions>
-
+                
                 <ImageButton
                     Grid.Column="1"
                     Grid.Row="1"
@@ -122,7 +122,7 @@
                         <Binding Path="ImageSource" Converter="{StaticResource NotNullToBoolConverter}" />
                     </ImageButton.IsVisible>
                 </ImageButton>
-
+                
                 <ImageButton
                     Grid.Column="2"
                     Grid.Row="1"
@@ -144,7 +144,7 @@
                         </DataTrigger>
                     </ImageButton.Triggers>
                 </ImageButton>
-
+                
                 <ImageButton
                     Grid.Column="3"
                     Grid.Row="1"
@@ -152,7 +152,7 @@
                     HeightRequest="55"
                     Source="book.png"
                     Style="{StaticResource CircleImageButton}"
-                    Command="{Binding StoryButtonTappedCommand}"/>
+                    Command="{Binding StoryButtonTappedCommand}" />
             </Grid>
         </Border>
 

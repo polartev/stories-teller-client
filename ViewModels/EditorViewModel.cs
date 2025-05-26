@@ -220,7 +220,7 @@ public partial class EditorViewModel : ObservableObject, IDisposable
         {
             if (disposing)
             {
-                this.webSocketService.OnMessageReceived -= OnMessageReceived;
+                webSocketService.OnMessageReceived -= OnMessageReceived;
             }
 
             disposed = true;

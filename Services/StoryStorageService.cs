@@ -13,27 +13,31 @@ public class StoryStorageService : IServices.IStoryStorageService
 {
     private readonly string filePath = StoragePaths.StoriesFilePath;
 
-    public async Task<List<Story>> LoadStoriesAsync()
+    public async Task<List<Story>> LoadAsync()
     {
         if (!File.Exists(filePath))
         {
             var defaultStories = Enumerable.Range(1, 2)
-                .Select(i => new Story($"Story {i}", ""))
+                .Select(i => new Story(Guid.NewGuid().ToString(), $"Story {i}", ""))
                 .ToList();
-            await SaveStoriesAsync(defaultStories);
+            await SaveAsync(defaultStories);
             return defaultStories;
         }
 
-        using FileStream fs = File.OpenRead(filePath);
-        return await JsonSerializer.DeserializeAsync<List<Story>>(fs) ?? new();
+        string json = await File.ReadAllTextAsync(filePath);
+        return JsonSerializer.Deserialize<List<Story>>(json) ?? new List<Story>();
     }
 
-    public async Task SaveStoriesAsync(IEnumerable<Story> stories)
+    public async Task SaveAsync(IEnumerable<Story> stories)
     {
-        using FileStream fs = File.Create(filePath);
-        await JsonSerializer.SerializeAsync(fs, stories, new JsonSerializerOptions
-        {
-            WriteIndented = true
-        });
+        string json = JsonSerializer.Serialize(stories, new JsonSerializerOptions { WriteIndented = true });
+        await File.WriteAllTextAsync(filePath, json);
+    }
+
+    public async Task DeleteAsync(Story story)
+    {
+        var stories = await LoadAsync();
+        stories.RemoveAll(s => s.Sid == story.Sid);
+        await SaveAsync(stories);
     }
 }

@@ -1,3 +1,5 @@
+using CommunityToolkit.Maui.Views;
+
 namespace Story_Teller.Views;
 
 public partial class BookshelfPage : ContentPage
@@ -23,17 +25,34 @@ public partial class BookshelfPage : ContentPage
         VisualStateManager.GoToState(main, GetCurrentWidthState(Width, "Main"));
     }
 
-    private void OnEditClicked(object sender, EventArgs e)
+    private async void EditButton_Clicked(object sender, EventArgs e)
     {
-        if (sender is ImageButton button &&
-            button.BindingContext is ViewModels.StoryViewModel vm)
+        var result = await this.ShowPopupAsync(new Popups.EditBookPopup());
+
+        ImageButton? button = sender as ImageButton;
+
+        if (sender is not ImageButton &&
+            button?.BindingContext is not ViewModels.StoryViewModel)
         {
-            var parent = button.Parent as Grid;
-            if (parent?.FindByName<Entry>("TitleEntry") is Entry entry)
-            {
-                entry.IsVisible = true;
-                entry.Focus();
-            }
+            return;
+        }
+
+        switch (result as string)
+        {
+            case "Edit":
+                var parent = button.Parent as Grid;
+                if (parent?.FindByName<Entry>("TitleEntry") is Entry entry)
+                {
+                    entry.IsVisible = true;
+                    entry.Focus();
+                }
+                break;
+            case "Delete":
+                if (button?.BindingContext is ViewModels.StoryViewModel vm) 
+                {
+                    await bookshelfViewModel.DeleteBookAsync(vm);
+                }
+                break;
         }
     }
 
