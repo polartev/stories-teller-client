@@ -85,9 +85,8 @@
                                 HeightRequest="44"
                                 HorizontalOptions="End"
                                 VerticalOptions="Start"
-                                BackgroundColor="Transparent"
                                 Source="edit.png"
-                                Clicked="EditButton_Clicked"
+                                Clicked="EditClicked"
                                 Style="{StaticResource SmallRoundedImageButton}" />
                             
                             <Entry 
@@ -95,7 +94,8 @@
                                 Text="{Binding Title, Mode=TwoWay}"
                                 IsVisible="False"
                                 BackgroundColor="White"
-                                FontSize="12"
+                                FontAttributes="Bold"
+                                FontSize="14"
                                 Grid.RowSpan="2"
                                 Completed="OnTitleEditCompleted"
                                 BindingContext="{Binding .}" />

@@ -95,6 +95,7 @@ public partial class EditorViewModel : ObservableObject, IDisposable
             byteContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
             content.Add(byteContent, "file", $"{User.Name}_img_{DateTime.UtcNow:yyyyMMdd_HHmmss}");
             content.Add(new StringContent(languageService.GetLanguage()), "language");
+            content.Add(new StringContent(Story.Content), "story");
 
             var url = $"https://api.stories-teller.com/upload?user_id={User.Name}";
             var response = await httpsPostService.HttpClient.PostAsync(url, content);

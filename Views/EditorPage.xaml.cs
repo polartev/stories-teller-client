@@ -44,7 +44,22 @@ public partial class EditorPage : ContentPage
         VisualStateManager.GoToState(main, GetCurrentHeightState(Height, "Main"));
     }
 
-    private async void CameraMenuButton_Clicked(object sender, EventArgs e)
+    private void EditClicked(object sender, EventArgs e)
+    {
+        if (TextContainer.FindByName<Editor>("ContentEditor") is Editor editor &&
+            TextContainer.FindByName<Label>("ContentLabel") is Label label)
+        {
+            label.IsVisible = !label.IsVisible;
+            editor.IsVisible = !editor.IsVisible;
+
+            if (editor.IsVisible)
+            {
+                editor.Focus();
+            }
+        }
+    }
+
+    private async void CameraMenuClicked(object sender, EventArgs e)
     {
         var result = await this.ShowPopupAsync(new Popups.ImageSourcePopup());
 

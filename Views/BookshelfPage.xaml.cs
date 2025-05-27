@@ -25,7 +25,7 @@ public partial class BookshelfPage : ContentPage
         VisualStateManager.GoToState(main, GetCurrentWidthState(Width, "Main"));
     }
 
-    private async void EditButton_Clicked(object sender, EventArgs e)
+    private async void EditClicked(object sender, EventArgs e)
     {
         var result = await this.ShowPopupAsync(new Popups.EditBookPopup());
 

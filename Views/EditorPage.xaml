@@ -91,7 +91,33 @@
         <ScrollView Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="3" VerticalOptions="Start">
             <Border Margin="10,10,10,120" StrokeShape="RoundRectangle 10" 
                     BackgroundColor="WhiteSmoke" Padding="12">
-                <Label Text="{Binding Story.Content}" />
+                <Grid x:Name="TextContainer">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="44"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Label x:Name="ContentLabel" Text="{Binding Story.Content}" />
+
+                    <Editor
+                        x:Name="ContentEditor"
+                        Text="{Binding Story.Content, Mode=TwoWay}"
+                        IsVisible="False"
+                        FontSize="14"
+                        AutoSize="TextChanges"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"
+                        BackgroundColor="WhiteSmoke"
+                        Margin="0" />
+                    
+                    <ImageButton
+                        Grid.Row="1"
+                        WidthRequest="44"
+                        HeightRequest="44"
+                        HorizontalOptions="End"
+                        Source="edit.png"
+                        Clicked="EditClicked"
+                        Style="{StaticResource SmallRoundedImageButton}" />
+                </Grid>
             </Border>
         </ScrollView>
         
@@ -130,7 +156,7 @@
                     HeightRequest="44"
                     Source="image_photo.png"
                     Style="{StaticResource RoundedImageButton}"
-                    Clicked="CameraMenuButton_Clicked">
+                    Clicked="CameraMenuClicked">
                     <ImageButton.Triggers>
                         <DataTrigger TargetType="ImageButton"
                              Binding="{Binding ImageSource}"
