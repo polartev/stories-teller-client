@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -8,6 +9,13 @@ public partial class BookshelfViewModel : ObservableObject
 {
     [ObservableProperty]
     private ObservableCollection<StoryViewModel> stories = new();
+
+    public IEnumerable<StoryViewModel> StoriesReversed => Stories.Reverse();
+
+    partial void OnStoriesChanged(ObservableCollection<StoryViewModel> value)
+    {
+        OnPropertyChanged(nameof(StoriesReversed));
+    }
 
     private IServices.IStoryStorageService storyStorageService;
 
@@ -26,6 +34,8 @@ public partial class BookshelfViewModel : ObservableObject
         {
             Stories.Add(new StoryViewModel(story, SaveAllAsync));
         }
+
+        OnPropertyChanged(nameof(StoriesReversed));
     }
 
     private async void SaveAllAsync()
@@ -34,20 +44,31 @@ public partial class BookshelfViewModel : ObservableObject
         await storyStorageService.SaveAsync(models);
     }
 
-    public ICommand AddStoryCommand => new Command(() =>
-    {
-        var newStory = new StoryViewModel(new Models.Story(Guid.NewGuid().ToString(), "New Story", ""), SaveAllAsync);
-        Stories.Add(newStory);
-        SaveAllAsync();
-    });
-
     public async Task DeleteBookAsync(StoryViewModel storyVM)
     {
         Stories.Remove(storyVM);
         await storyStorageService.DeleteAsync(storyVM.ToModel());
+
+        OnPropertyChanged(nameof(StoriesReversed));
     }
 
-    public ICommand OpenStoryCommand => new Command<StoryViewModel>(async (story) =>
+    [RelayCommand]
+    private Task OnAddStoryTapped()
+    {
+        var story = new StoryViewModel(new Models.Story(Guid.NewGuid().ToString(), "New Story", ""), SaveAllAsync);
+        Stories.Add(story);
+        SaveAllAsync();
+
+        OnPropertyChanged(nameof(StoriesReversed));
+
+        return Shell.Current.GoToAsync(nameof(Views.EditorPage), true, new Dictionary<string, object>
+        {
+            ["Story"] = story
+        });
+    }
+
+    [RelayCommand]
+    private async Task OnOpenStoryTappedAsync(StoryViewModel story)
     {
         if (story != null)
         {
@@ -56,5 +77,5 @@ public partial class BookshelfViewModel : ObservableObject
                 ["Story"] = story
             });
         }
-    });
+    }
 }

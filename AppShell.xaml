@@ -20,7 +20,7 @@
     </Shell.Resources>
     
     <ShellContent
-        Title="Bookshelf"
+        Title="Library"
         ContentTemplate="{DataTemplate views:BookshelfPage}"
         Route="BookshelfPage" />
 

@@ -58,7 +58,7 @@
                 Wrap="Wrap"
                 JustifyContent="Start"
                 AlignItems="Start"
-                BindableLayout.ItemsSource="{Binding Stories}">
+                BindableLayout.ItemsSource="{Binding StoriesReversed}">
                 
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="vm:StoryViewModel">
@@ -74,7 +74,7 @@
                                 TextColor="Gray"
                                 Style="{StaticResource RoundedButton}"
                                 FontAttributes="Bold"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BookshelfViewModel}}, Path=OpenStoryCommand}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BookshelfViewModel}}, Path=OpenStoryTappedCommand}"
                                 CommandParameter="{Binding .}"
                                 WidthRequest="{OnPlatform Android=120, WinUI=150}"
                                 HeightRequest="{OnPlatform Android=150, WinUI=180}" />
@@ -112,7 +112,7 @@
                 <ImageButton
                     Source="plus.png"
                     Style="{StaticResource RoundedImageButton}"
-                    Command="{Binding AddStoryCommand}"
+                    Command="{Binding AddStoryTappedCommand}"
                     WidthRequest="{OnPlatform Android=64, WinUI=74}"
                     HeightRequest="{OnPlatform Android=64, WinUI=74}" />
             </VerticalStackLayout>
