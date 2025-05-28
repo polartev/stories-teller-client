@@ -87,56 +87,92 @@
             <RowDefinition Height="2*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        
-        <ScrollView Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" VerticalOptions="Start">
-            <Border
-                Padding="12"
-                Margin="10,10,10,120"
-                StrokeShape="RoundRectangle 10"
-                BackgroundColor="WhiteSmoke">
-                <Border.Triggers>
-                    <DataTrigger TargetType="Border"
-                             Binding="{Binding Story.Content}"
-                             Value="">
-                        <Setter Property="IsVisible" Value="False" />
-                    </DataTrigger>
-                    <DataTrigger TargetType="Border"
-                             Binding="{Binding Story.Content, Converter={StaticResource NotNullToBoolConverter}}"
-                             Value="False">
-                        <Setter Property="IsVisible" Value="True" />
-                    </DataTrigger>
-                </Border.Triggers>
-                <Grid x:Name="TextContainer">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="44"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    
-                    <Label x:Name="ContentLabel" Text="{Binding Story.Content}" />
 
-                    <Editor
-                        x:Name="ContentEditor"
-                        Text="{Binding Story.Content, Mode=TwoWay}"
-                        IsVisible="False"
-                        FontSize="14"
-                        AutoSize="TextChanges"
-                        HorizontalOptions="FillAndExpand"
-                        VerticalOptions="FillAndExpand"
-                        BackgroundColor="WhiteSmoke"
-                        Margin="0" />
-                    
-                    <ImageButton
-                        Grid.Row="1"
-                        WidthRequest="44"
-                        HeightRequest="44"
-                        HorizontalOptions="End"
-                        Source="edit.png"
-                        Clicked="EditClicked"
-                        Style="{StaticResource SmallRoundedImageButton}" />
-                </Grid>
-            </Border>
+        <ScrollView Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Grid.RowSpan="2" VerticalOptions="Start">
+            <Grid>
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="InnerGridWidthStates">
+                        <VisualState x:Name="LargeWidthInnerGrid">
+                            <VisualState.StateTriggers>
+                                <AdaptiveTrigger MinWindowWidth="1200" />
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Property="ColumnDefinitions" Value="*,3*,*" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="MediumWidthInnerGrid">
+                            <VisualState.StateTriggers>
+                                <AdaptiveTrigger MinWindowWidth="800" />
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Property="ColumnDefinitions" Value="*,4*,*" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="SmallWidthInnerGrid">
+                            <VisualState.StateTriggers>
+                                <AdaptiveTrigger MinWindowWidth="400" />
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Property="ColumnDefinitions" Value="*,9*,*" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Border
+                    Grid.Column="1" Padding="12"
+                    Margin="10,10,10,120"
+                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="WhiteSmoke">
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border"
+                                 Binding="{Binding Story.Content}"
+                                 Value="">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Border"
+                                 Binding="{Binding Story.Content, Converter={StaticResource NotNullToBoolConverter}}"
+                                 Value="False">
+                            <Setter Property="IsVisible" Value="True" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Grid x:Name="TextContainer">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="44"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Label x:Name="ContentLabel" Text="{Binding Story.Content}" />
+
+                        <Editor
+                            x:Name="ContentEditor"
+                            Text="{Binding Story.Content, Mode=TwoWay}"
+                            IsVisible="False"
+                            FontSize="14"
+                            AutoSize="TextChanges"
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand"
+                            BackgroundColor="WhiteSmoke"
+                            Margin="0" />
+
+                        <ImageButton
+                            Grid.Row="1"
+                            WidthRequest="44"
+                            HeightRequest="44"
+                            HorizontalOptions="End"
+                            Source="edit.png"
+                            Clicked="EditClicked"
+                            Style="{StaticResource SmallRoundedImageButton}" />
+                    </Grid>
+                </Border>
+            </Grid>
         </ScrollView>
-        
+
         <Border Grid.Column="1" Grid.Row="2" Margin="5,0,5,5" StrokeShape="RoundRectangle 10" BackgroundColor="WhiteSmoke">
             <Grid Margin="5">
                 <Grid.ColumnDefinitions>
