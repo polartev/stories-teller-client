@@ -41,6 +41,7 @@ public partial class EditorPage : ContentPage
         base.OnAppearing();
 
         VisualStateManager.GoToState(main, GetCurrentWidthState(Width, "Main"));
+        VisualStateManager.GoToState(story, GetCurrentWidthState(Width, "InnerGrid"));
         VisualStateManager.GoToState(main, GetCurrentHeightState(Height, "Main"));
     }
 
