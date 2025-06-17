@@ -11,6 +11,9 @@ public partial class EditorViewModel : ObservableObject, IDisposable
     private bool disposed = false;
 
     [ObservableProperty]
+    private bool isLoading = false;
+
+    [ObservableProperty]
     private byte[]? image;
 
     [ObservableProperty]
@@ -80,8 +83,11 @@ public partial class EditorViewModel : ObservableObject, IDisposable
     {
         try
         {
+            IsLoading = true;
+
             if (Image == null)
             {
+                IsLoading = false;
 #if DEBUG
                 await alertService.ShowAlertAsync("Debug", "Image is null. Check what happens in MainPage.xaml.cs. (MainViewModel.cs:30)");
 #else
@@ -121,6 +127,7 @@ public partial class EditorViewModel : ObservableObject, IDisposable
             }
             else
             {
+                IsLoading = false;
 #if DEBUG
                 await alertService.ShowAlertAsync("Debug", $"Upload failed: {response.ReasonPhrase}");
 #else
@@ -130,6 +137,7 @@ public partial class EditorViewModel : ObservableObject, IDisposable
         }
         catch (Exception ex)
         {
+            IsLoading = false;
 #if DEBUG
             await alertService.ShowAlertAsync("Debug", $"Error: {ex.Message}");
 #endif
@@ -195,6 +203,7 @@ public partial class EditorViewModel : ObservableObject, IDisposable
 #endif
                         }
                     }
+                    IsLoading = false;
                 }
                 break;
             default:

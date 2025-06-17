@@ -200,7 +200,7 @@
                         <Binding Path="ImageSource" Converter="{StaticResource NotNullToBoolConverter}" />
                     </ImageButton.IsVisible>
                 </ImageButton>
-                
+
                 <ImageButton
                     Grid.Column="2"
                     Grid.Row="1"
@@ -210,19 +210,45 @@
                     Style="{StaticResource RoundedImageButton}"
                     Clicked="CameraMenuClicked">
                     <ImageButton.Triggers>
-                        <DataTrigger TargetType="ImageButton"
-                             Binding="{Binding ImageSource}"
-                             Value="{x:Null}">
-                            <Setter Property="Source" Value="image_photo.png" />
+                        <DataTrigger 
+                            TargetType="ImageButton"
+                            Binding="{Binding ImageSource}"
+                            Value="{x:Null}">
+                            <Setter Property="IsVisible" Value="true" />
                         </DataTrigger>
                         <DataTrigger TargetType="ImageButton"
                              Binding="{Binding ImageSource, Converter={StaticResource NotNullToBoolConverter}}"
                              Value="True">
-                            <Setter Property="Source" Value="{Binding ImageSource}" />
+                            <Setter Property="IsVisible" Value="false" />
                         </DataTrigger>
                     </ImageButton.Triggers>
                 </ImageButton>
-                
+
+                <Border
+                    Grid.Column="2"
+                    Grid.Row="1"
+                    StrokeThickness="0.2"
+                    StrokeShape="RoundRectangle 10"
+                    WidthRequest="44"
+                    HeightRequest="44"
+                    BackgroundColor="White"
+                    IsVisible="false">
+                    <Border.Triggers>
+                        <DataTrigger 
+                            TargetType="Border"
+                            Binding="{Binding ImageSource}"
+                            Value="{x:Null}">
+                            <Setter Property="IsVisible" Value="false" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Border"
+                             Binding="{Binding ImageSource, Converter={StaticResource NotNullToBoolConverter}}"
+                             Value="True">
+                            <Setter Property="IsVisible" Value="true" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Image Source="{Binding ImageSource}" Aspect="Fill" />
+                </Border>
+
                 <ImageButton
                     Grid.Column="3"
                     Grid.Row="1"
@@ -233,6 +259,21 @@
                     Command="{Binding StoryButtonTappedCommand}" />
             </Grid>
         </Border>
+
+        <Grid 
+            IsVisible="{Binding IsLoading}"
+             Grid.Column="0" Grid.ColumnSpan="3" 
+             Grid.Row="0" Grid.RowSpan="3"
+             InputTransparent="False">
+            <BoxView BackgroundColor="#AAFFFFFF" />
+            <ActivityIndicator 
+                IsRunning="True"
+                Color="DarkGray"
+                WidthRequest="50"
+                HeightRequest="50"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+        </Grid>
 
     </Grid>
 
