@@ -27,9 +27,9 @@ public partial class EditorPage : ContentPage
     }
 
     string GetCurrentWidthState(double width, string name)
-=> width >= 1200 ? $"LargeWidth{name}"
-   : width >= 800 ? $"MediumWidth{name}"
-               : $"SmallWidth{name}";
+        => width >= 1200 ? $"LargeWidth{name}"
+           : width >= 800 ? $"MediumWidth{name}"
+                       : $"SmallWidth{name}";
 
     string GetCurrentHeightState(double height, string name)
         => height >= 600 ? $"LargeHeight{name}"

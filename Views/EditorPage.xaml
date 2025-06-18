@@ -124,6 +124,7 @@
                     <ColumnDefinition Width="3*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
+
                 <Border
                     Grid.Column="1" Padding="12"
                     Margin="10,10,10,120"
@@ -147,7 +148,18 @@
                             <RowDefinition Height="44"></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <Label x:Name="ContentLabel" Text="{Binding Story.Content}" />
+                        <Label 
+                            x:Name="ContentLabel" 
+                            Text="{Binding Story.Content}">
+                            <Label.Triggers>
+                                <DataTrigger 
+                                    TargetType="Label"
+                                    Binding="{Binding IsTextContainer}"
+                                    Value="false">
+                                    <Setter Property="IsVisible" Value="false" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
 
                         <Editor
                             x:Name="ContentEditor"
@@ -158,7 +170,16 @@
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="FillAndExpand"
                             BackgroundColor="WhiteSmoke"
-                            Margin="0" />
+                            Margin="0">
+                            <Editor.Triggers>
+                                <DataTrigger 
+                                    TargetType="Editor"
+                                    Binding="{Binding IsTextContainer}"
+                                    Value="false">
+                                    <Setter Property="IsVisible" Value="false" />
+                                </DataTrigger>
+                            </Editor.Triggers>
+                        </Editor>
 
                         <ImageButton
                             Grid.Row="1"
@@ -167,11 +188,99 @@
                             HorizontalOptions="End"
                             Source="edit.png"
                             Clicked="EditClicked"
+                            IsVisible="{Binding IsTextContainer}"
                             Style="{StaticResource SmallRoundedImageButton}" />
+
+                        <FlexLayout 
+                            Grid.RowSpan="2"
+                            Direction="Row"
+                            Wrap="Wrap"
+                            JustifyContent="Start"
+                            AlignItems="Start"
+                            BindableLayout.ItemsSource="{Binding ImageSources}"
+                            IsVisible="{Binding IsTextContainer, Converter={StaticResource BoolInverterConverter}}">
+                            
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="FileImageSource">
+                                    <ImageButton
+                                        Margin="1"
+                                        Aspect="Fill"
+                                        WidthRequest="{OnPlatform Android=120, WinUI=150}"
+                                        HeightRequest="{OnPlatform Android=120, WinUI=150}"
+                                        Source="{Binding .}" />
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
                     </Grid>
                 </Border>
             </Grid>
         </ScrollView>
+
+        <ImageButton 
+            Grid.Column="0"
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            WidthRequest="100"
+            HeightRequest="100"
+            VerticalOptions="Center"
+            HorizontalOptions="End"
+            Source="arrow_left.png"
+            Style="{StaticResource SmallRoundedImageButton}"
+            Command="{Binding ArrowButtonTappedCommand}">
+            <ImageButton.Triggers>
+                <DataTrigger 
+                    TargetType="ImageButton"
+                    Binding="{Binding IsTextContainer}"
+                    Value="true">
+                    <Setter Property="IsVisible" Value="false" />
+                </DataTrigger>
+                <DataTrigger 
+                    TargetType="ImageButton"
+                    Binding="{Binding IsTextContainer}"
+                    Value="false">
+                    <Setter Property="IsVisible" Value="true" />
+                </DataTrigger>
+                <DataTrigger 
+                    TargetType="ImageButton"
+                    Binding="{Binding Story.Content}"
+                    Value="">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </ImageButton.Triggers>
+        </ImageButton>
+
+        <ImageButton 
+            Grid.Column="2"
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            WidthRequest="100"
+            HeightRequest="100"
+            VerticalOptions="Center"
+            HorizontalOptions="Start"
+            Source="arrow_right.png"
+            Style="{StaticResource SmallRoundedImageButton}"
+            Command="{Binding ArrowButtonTappedCommand}">
+            <ImageButton.Triggers>
+                <DataTrigger 
+                    TargetType="ImageButton"
+                    Binding="{Binding IsTextContainer}"
+                    Value="true">
+                    <Setter Property="IsVisible" Value="true" />
+                </DataTrigger>
+                <DataTrigger 
+                    TargetType="ImageButton"
+                    Binding="{Binding IsTextContainer}"
+                    Value="false">
+                    <Setter Property="IsVisible" Value="false" />
+                </DataTrigger>
+                <DataTrigger 
+                    TargetType="ImageButton"
+                    Binding="{Binding Story.Content}"
+                    Value="">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </ImageButton.Triggers>
+        </ImageButton>
 
         <Border Grid.Column="1" Grid.Row="2" Margin="5,0,5,5" StrokeShape="RoundRectangle 10" BackgroundColor="WhiteSmoke">
             <Grid Margin="5">

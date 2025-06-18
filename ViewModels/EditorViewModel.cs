@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls;
+using System.Collections.ObjectModel;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -14,10 +16,16 @@ public partial class EditorViewModel : ObservableObject, IDisposable
     private bool isLoading = false;
 
     [ObservableProperty]
+    private bool isTextContainer = true;
+
+    [ObservableProperty]
     private byte[]? image;
 
     [ObservableProperty]
     private ImageSource? imageSource;
+
+    [ObservableProperty]
+    private ObservableCollection<ImageSource>? imageSources;
 
     [ObservableProperty]
     private UserViewModel? user;
@@ -26,12 +34,14 @@ public partial class EditorViewModel : ObservableObject, IDisposable
     private StoryViewModel? story;
 
     private IServices.IAlertService alertService;
+    private IServices.IImageStorageService imageStorageService;
     private IServices.ILanguageService languageService;
     private IServices.IConnectionService connectionService;
     private IServices.IWebSocketService webSocketService;
     private IServices.IHttpsService httpsPostService;
 
     public EditorViewModel(IServices.IAlertService alertService,
+        IServices.IImageStorageService imageStorageService,
         IServices.ILanguageService languageService,
         IServices.IConnectionService connectionService,
         IServices.IWebSocketService webSocketService,
@@ -41,6 +51,7 @@ public partial class EditorViewModel : ObservableObject, IDisposable
         User = userViewModel;
 
         this.alertService = alertService;
+        this.imageStorageService = imageStorageService;
         this.languageService = languageService;
         this.connectionService = connectionService;
         this.webSocketService = webSocketService;
@@ -64,6 +75,21 @@ public partial class EditorViewModel : ObservableObject, IDisposable
         else
         {
             ImageSource = null;
+        }
+    }
+
+    [RelayCommand]
+    private async Task OnArrowButtonTappedAsync()
+    {
+        if (IsTextContainer)
+        {
+            IsTextContainer = false;
+            ImageSources = new ObservableCollection<ImageSource>(
+                await imageStorageService.LoadImagesAsync(Story.Sid));
+        }
+        else
+        {
+            IsTextContainer = true;
         }
     }
 
@@ -117,10 +143,12 @@ public partial class EditorViewModel : ObservableObject, IDisposable
                         {
                             if (Image != null)
                             {
+                                await imageStorageService.AddImageAsync(Story.Sid, ImageSource);
                                 Image = null;
                             }
-
+#if DEBUG
                             await alertService.ShowAlertAsync("Success", "Image uploaded successfully.");
+#endif
                         }
                     }
                 }

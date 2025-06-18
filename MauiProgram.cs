@@ -25,6 +25,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IServices.IWebSocketService, Services.WebSocketService>();
         builder.Services.AddSingleton<IServices.IHttpsService, Services.HttpsService>();
         builder.Services.AddSingleton<IServices.IConnectionService, Services.ConnectionService>();
+        builder.Services.AddSingleton<IServices.IImageStorageService, Services.ImageStorageService>();
         builder.Services.AddSingleton<IServices.IStoryStorageService, Services.StoryStorageService>();
 
         builder.Services.AddSingleton<ViewModels.FlyoutFooterViewModel>();
