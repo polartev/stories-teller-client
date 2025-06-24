@@ -43,11 +43,11 @@
                         <AdaptiveTrigger MinWindowWidth="400" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Property="ColumnDefinitions" Value="*,9*,*" />
+                        <Setter Property="ColumnDefinitions" Value="*,8*,*" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
-            
+
             <!-- VisualStateGroup for Height of ContentPage -->
             <VisualStateGroup x:Name="MainHeightStates">
                 <VisualState x:Name="LargeHeightMain">
@@ -76,19 +76,13 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="3*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="3*"></RowDefinition>
-            <RowDefinition Height="2*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
 
-        <ScrollView Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Grid.RowSpan="2" VerticalOptions="Start">
+        <ScrollView 
+            Grid.Column="0" 
+            Grid.ColumnSpan="3" 
+            Grid.Row="0" 
+            Grid.RowSpan="2" 
+            VerticalOptions="Start">
             <Grid x:Name="story">
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup x:Name="InnerGridWidthStates">
@@ -113,17 +107,11 @@
                                 <AdaptiveTrigger MinWindowWidth="400" />
                             </VisualState.StateTriggers>
                             <VisualState.Setters>
-                                <Setter Property="ColumnDefinitions" Value="*,9*,*" />
+                                <Setter Property="ColumnDefinitions" Value="*,8*,*" />
                             </VisualState.Setters>
                         </VisualState>
                     </VisualStateGroup>
                 </VisualStateManager.VisualStateGroups>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="3*"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
 
                 <Border
                     Grid.Column="1" Padding="12"
@@ -195,15 +183,14 @@
                             Grid.RowSpan="2"
                             Direction="Row"
                             Wrap="Wrap"
-                            JustifyContent="Start"
-                            AlignItems="Start"
+                            JustifyContent="SpaceEvenly"
                             BindableLayout.ItemsSource="{Binding ImageSources}"
                             IsVisible="{Binding IsTextContainer, Converter={StaticResource BoolInverterConverter}}">
                             
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="FileImageSource">
                                     <ImageButton
-                                        Margin="1"
+                                        Margin="5"
                                         Aspect="Fill"
                                         WidthRequest="{OnPlatform Android=120, WinUI=150}"
                                         HeightRequest="{OnPlatform Android=120, WinUI=150}"
@@ -220,12 +207,12 @@
             Grid.Column="0"
             Grid.Row="0"
             Grid.RowSpan="2"
-            WidthRequest="100"
+            WidthRequest="{OnPlatform Android=25, WinUI=50}"
             HeightRequest="100"
             VerticalOptions="Center"
             HorizontalOptions="End"
             Source="arrow_left.png"
-            Style="{StaticResource SmallRoundedImageButton}"
+            Style="{StaticResource RoundedImageButton}"
             Command="{Binding ArrowButtonTappedCommand}">
             <ImageButton.Triggers>
                 <DataTrigger 
@@ -253,12 +240,12 @@
             Grid.Column="2"
             Grid.Row="0"
             Grid.RowSpan="2"
-            WidthRequest="100"
+            WidthRequest="{OnPlatform Android=25, WinUI=50}"
             HeightRequest="100"
             VerticalOptions="Center"
             HorizontalOptions="Start"
             Source="arrow_right.png"
-            Style="{StaticResource SmallRoundedImageButton}"
+            Style="{StaticResource RoundedImageButton}"
             Command="{Binding ArrowButtonTappedCommand}">
             <ImageButton.Triggers>
                 <DataTrigger 
