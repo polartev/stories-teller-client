@@ -13,10 +13,16 @@ public partial class EditorViewModel : ObservableObject, IDisposable
     private bool disposed = false;
 
     [ObservableProperty]
+    private bool isEditing = false;
+
+    [ObservableProperty]
     private bool isLoading = false;
 
     [ObservableProperty]
     private bool isTextContainer = true;
+
+    [ObservableProperty]
+    private string editText = "";
 
     [ObservableProperty]
     private byte[]? image;
@@ -94,6 +100,34 @@ public partial class EditorViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
+    private Task OnChangeModeButtonTapped()
+    {
+        IsEditing = !IsEditing;
+
+        if (Story != null)
+        {
+            if (IsEditing == true)
+            {
+                EditText = Story.Content;
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    [RelayCommand]
+    private Task OnAcceptButtonTapped()
+    {
+        if (Story != null)
+        {
+            IsEditing = false;
+            Story.Content = EditText;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    [RelayCommand]
     private Task OnImageButtonTapped()
     {
         if (Image != null)
@@ -120,6 +154,12 @@ public partial class EditorViewModel : ObservableObject, IDisposable
                 await alertService.ShowAlertAsync("Error", "The image could not be processed. Please try again.");
 #endif
                 return;
+            }
+
+            if (Story != null)
+            {
+                IsEditing = false;
+                Story.Content = EditText;
             }
 
             var content = new MultipartFormDataContent();

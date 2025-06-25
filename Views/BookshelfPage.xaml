@@ -14,52 +14,48 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </ContentPage.Resources>
-    
-    <ScrollView>
-        <Grid x:Name="main" Margin="16">
-            <VisualStateManager.VisualStateGroups>
-                <VisualStateGroup x:Name="MainWidthStates">
-                    <VisualState x:Name="LargeWidthMain">
-                        <VisualState.StateTriggers>
-                            <AdaptiveTrigger MinWindowWidth="1200" />
-                        </VisualState.StateTriggers>
-                        <VisualState.Setters>
-                            <Setter Property="ColumnDefinitions" Value="15*,*" />
-                        </VisualState.Setters>
-                    </VisualState>
-                    <VisualState x:Name="MediumWidthMain">
-                        <VisualState.StateTriggers>
-                            <AdaptiveTrigger MinWindowWidth="800" />
-                        </VisualState.StateTriggers>
-                        <VisualState.Setters>
-                            <Setter Property="ColumnDefinitions" Value="9*,*" />
-                        </VisualState.Setters>
-                    </VisualState>
-                    <VisualState x:Name="SmallWidthMain">
-                        <VisualState.StateTriggers>
-                            <AdaptiveTrigger MinWindowWidth="400" />
-                        </VisualState.StateTriggers>
-                        <VisualState.Setters>
-                            <Setter Property="ColumnDefinitions" Value="6*,*" />
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateManager.VisualStateGroups>
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="9*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            
+
+    <Grid x:Name="main" Margin="16">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="MainHeightStates">
+                <VisualState x:Name="LargeHeightMain">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="600" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Property="RowDefinitions" Value="*,100" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MediumHeightMain">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="500" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Property="RowDefinitions" Value="*,90" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="SmallHeightMain">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="400" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Property="RowDefinitions" Value="*,80" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
+        
+        
+        <ScrollView Grid.Row="0">
             <FlexLayout
-                Grid.Column="0"
                 x:Name="BooksFlexLayout"
                 Direction="Row"
                 Wrap="Wrap"
                 JustifyContent="Start"
                 AlignItems="Start"
                 BindableLayout.ItemsSource="{Binding StoriesReversed}">
-                
+
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="vm:StoryViewModel">
                         <Grid Padding="8">
@@ -67,7 +63,7 @@
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            
+
                             <Button 
                                 Margin="8"
                                 Text="{Binding Title}"
@@ -78,7 +74,7 @@
                                 CommandParameter="{Binding .}"
                                 WidthRequest="{OnPlatform Android=120, WinUI=150}"
                                 HeightRequest="{OnPlatform Android=150, WinUI=180}" />
-                            
+
                             <ImageButton
                                 Margin="10"
                                 WidthRequest="44"
@@ -88,7 +84,7 @@
                                 Source="edit.png"
                                 Clicked="EditClicked"
                                 Style="{StaticResource SmallRoundedImageButton}" />
-                            
+
                             <Entry 
                                 x:Name="TitleEntry"
                                 Text="{Binding Title, Mode=TwoWay}"
@@ -103,19 +99,19 @@
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
             </FlexLayout>
-            
-            <VerticalStackLayout
-                Grid.Column="1"
-                VerticalOptions="Start"
+        </ScrollView>
+        
+        <HorizontalStackLayout
+                Grid.Row="1"
+                VerticalOptions="Center"
                 HorizontalOptions="End"
                 Margin="5">
-                <ImageButton
+            <ImageButton
                     Source="plus.png"
                     Style="{StaticResource RoundedImageButton}"
                     Command="{Binding AddStoryTappedCommand}"
                     WidthRequest="{OnPlatform Android=64, WinUI=74}"
                     HeightRequest="{OnPlatform Android=64, WinUI=74}" />
-            </VerticalStackLayout>
-        </Grid>
-    </ScrollView>
+        </HorizontalStackLayout>
+    </Grid>
 </ContentPage>

@@ -130,6 +130,7 @@
                             <Setter Property="IsVisible" Value="True" />
                         </DataTrigger>
                     </Border.Triggers>
+                    
                     <Grid x:Name="TextContainer">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"></RowDefinition>
@@ -137,7 +138,9 @@
                         </Grid.RowDefinitions>
 
                         <Label 
-                            x:Name="ContentLabel" 
+                            x:Name="ContentLabel"
+                            TextColor="#282626"
+                            HorizontalTextAlignment="Justify"
                             Text="{Binding Story.Content}">
                             <Label.Triggers>
                                 <DataTrigger 
@@ -146,19 +149,27 @@
                                     Value="false">
                                     <Setter Property="IsVisible" Value="false" />
                                 </DataTrigger>
+                                <DataTrigger
+                                    TargetType="Label"
+                                    Binding="{Binding IsEditing}"
+                                    Value="true">
+                                    <Setter Property="IsVisible" Value="false" />
+                                </DataTrigger>
                             </Label.Triggers>
                         </Label>
 
                         <Editor
-                            x:Name="ContentEditor"
-                            Text="{Binding Story.Content, Mode=TwoWay}"
-                            IsVisible="False"
-                            FontSize="14"
-                            AutoSize="TextChanges"
+                            Margin="0"
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="FillAndExpand"
+                            FontSize="14"
+                            TextColor="#282626"
+                            AutoSize="TextChanges"
+                            HorizontalTextAlignment="Justify"
+                            Text="{Binding EditText, Mode=TwoWay}"
+
                             BackgroundColor="WhiteSmoke"
-                            Margin="0">
+                            IsVisible="{Binding IsEditing}">
                             <Editor.Triggers>
                                 <DataTrigger 
                                     TargetType="Editor"
@@ -169,15 +180,35 @@
                             </Editor.Triggers>
                         </Editor>
 
-                        <ImageButton
-                            Grid.Row="1"
-                            WidthRequest="44"
-                            HeightRequest="44"
-                            HorizontalOptions="End"
-                            Source="edit.png"
-                            Clicked="EditClicked"
-                            IsVisible="{Binding IsTextContainer}"
-                            Style="{StaticResource SmallRoundedImageButton}" />
+                        <HorizontalStackLayout 
+                            Grid.Row="1" 
+                            HorizontalOptions="End" 
+                            IsVisible="{Binding IsTextContainer}">
+                            <ImageButton
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                Source="edit.png"
+                                IsVisible="{Binding IsEditing, Converter={StaticResource BoolInverterConverter}}"
+                                Command="{Binding ChangeModeButtonTappedCommand}"
+                                Style="{StaticResource SmallRoundedImageButton}" />
+
+                            <ImageButton
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                Source="yes.png"
+                                IsVisible="{Binding IsEditing}"
+                                Command="{Binding AcceptButtonTappedCommand}"
+                                Style="{StaticResource SmallRoundedImageButton}" />
+
+                            <ImageButton
+                                Padding="10"
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                Source="cross.png"
+                                IsVisible="{Binding IsEditing}"
+                                Command="{Binding ChangeModeButtonTappedCommand}"
+                                Style="{StaticResource SmallRoundedImageButton}" />
+                        </HorizontalStackLayout>
 
                         <FlexLayout 
                             Grid.RowSpan="2"
