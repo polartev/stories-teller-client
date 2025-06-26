@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -31,7 +32,7 @@ public partial class EditorViewModel : ObservableObject, IDisposable
     private ImageSource? imageSource;
 
     [ObservableProperty]
-    private ObservableCollection<ImageSource>? imageSources;
+    private ObservableCollection<Models.ImageItem>? imageSources;
 
     [ObservableProperty]
     private UserViewModel? user;
@@ -90,13 +91,26 @@ public partial class EditorViewModel : ObservableObject, IDisposable
         if (IsTextContainer)
         {
             IsTextContainer = false;
-            ImageSources = new ObservableCollection<ImageSource>(
+            ImageSources = new ObservableCollection<Models.ImageItem>(
                 await imageStorageService.LoadImagesAsync(Story.Sid));
         }
         else
         {
             IsTextContainer = true;
         }
+    }
+
+    [RelayCommand]
+    private async Task OnDeleteImageButtonTappedAsync(Models.ImageItem image)
+    {
+        if (ImageSources == null) return;
+
+        bool confirm = await alertService.ShowConfirmationAsync("Delete", "Delete this image?");
+        if (!confirm)
+            return;
+
+        ImageSources.Remove(image);
+        await imageStorageService.DeleteImageAsync(Story.Sid, image.Path);
     }
 
     [RelayCommand]
@@ -158,8 +172,16 @@ public partial class EditorViewModel : ObservableObject, IDisposable
 
             if (Story != null)
             {
-                IsEditing = false;
-                Story.Content = EditText;
+                if (IsEditing == true)
+                {
+                    IsEditing = false;
+                    Story.Content = EditText;
+                }
+            }
+
+            if (Story.Content != "")
+            {
+                Story.Content = Story.Content.TrimEnd() + Environment.NewLine;
             }
 
             var content = new MultipartFormDataContent();

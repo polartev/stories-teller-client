@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Story_Teller.ViewModels"
+             xmlns:models="clr-namespace:Story_Teller.Models"
              xmlns:local="clr-namespace:Story_Teller"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:styles="clr-namespace:Story_Teller.Resources.Styles"
@@ -140,6 +141,8 @@
                         <Label 
                             x:Name="ContentLabel"
                             TextColor="#282626"
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand"
                             HorizontalTextAlignment="Justify"
                             Text="{Binding Story.Content}">
                             <Label.Triggers>
@@ -167,7 +170,6 @@
                             AutoSize="TextChanges"
                             HorizontalTextAlignment="Justify"
                             Text="{Binding EditText, Mode=TwoWay}"
-
                             BackgroundColor="WhiteSmoke"
                             IsVisible="{Binding IsEditing}">
                             <Editor.Triggers>
@@ -210,22 +212,23 @@
                                 Style="{StaticResource SmallRoundedImageButton}" />
                         </HorizontalStackLayout>
 
-                        <FlexLayout 
+                        <FlexLayout
                             Grid.RowSpan="2"
                             Direction="Row"
                             Wrap="Wrap"
                             JustifyContent="SpaceEvenly"
                             BindableLayout.ItemsSource="{Binding ImageSources}"
                             IsVisible="{Binding IsTextContainer, Converter={StaticResource BoolInverterConverter}}">
-                            
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="FileImageSource">
+                                <DataTemplate x:DataType="models:ImageItem">
                                     <ImageButton
                                         Margin="5"
                                         Aspect="Fill"
                                         WidthRequest="{OnPlatform Android=120, WinUI=150}"
                                         HeightRequest="{OnPlatform Android=120, WinUI=150}"
-                                        Source="{Binding .}" />
+                                        Source="{Binding Source}" 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditorViewModel}}, Path=DeleteImageButtonTappedCommand}"
+                                        CommandParameter="{Binding .}" />
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </FlexLayout>

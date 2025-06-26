@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Linq;
+using System.Text.Json;
 
 namespace Story_Teller.Services;
 
@@ -15,20 +16,24 @@ public class ImageStorageService : IServices.IImageStorageService
         }
     }
 
-    public async Task<List<ImageSource>> LoadImagesAsync(string sid)
+    public async Task<List<Models.ImageItem>> LoadImagesAsync(string sid)
     {
         if (!File.Exists(imagesJson))
             return new();
 
         var json = await File.ReadAllTextAsync(imagesJson);
-        var dict = JsonSerializer.Deserialize<Dictionary<string, List<Models.StoryImage>>>(json)
+        var dict = JsonSerializer.Deserialize<Dictionary<string, List<Models.ImagePath>>>(json)
                    ?? new();
 
-        if (!dict.TryGetValue(sid, out var images))
+        if (!dict.TryGetValue(sid, out var imagePaths))
             return new();
 
-        return images
-            .Select(img => ImageSource.FromFile(img.path))
+        return imagePaths
+            .Select(p => new Models.ImageItem
+            {
+                Path = p.path,
+                Source = ImageSource.FromFile(p.path)
+            })
             .ToList();
     }
 
@@ -53,12 +58,12 @@ public class ImageStorageService : IServices.IImageStorageService
             throw new NotSupportedException("Unsupported ImageSource type");
         }
 
-        Dictionary<string, List<Models.StoryImage>> dict;
+        Dictionary<string, List<Models.ImagePath>> dict;
 
         if (File.Exists(imagesJson))
         {
             var json = await File.ReadAllTextAsync(imagesJson);
-            dict = JsonSerializer.Deserialize<Dictionary<string, List<Models.StoryImage>>>(json) ?? new();
+            dict = JsonSerializer.Deserialize<Dictionary<string, List<Models.ImagePath>>>(json) ?? new();
         }
         else
         {
@@ -68,10 +73,42 @@ public class ImageStorageService : IServices.IImageStorageService
         if (!dict.ContainsKey(sid))
             dict[sid] = new();
 
-        dict[sid].Add(new Models.StoryImage { path = fullPath });
+        dict[sid].Add(new Models.ImagePath { path = fullPath });
 
         var updatedJson = JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true });
         await File.WriteAllTextAsync(imagesJson, updatedJson);
+    }
+
+    public async Task DeleteImageAsync(string sid, string path)
+    {
+        if (!File.Exists(imagesJson))
+            return;
+
+        var json = await File.ReadAllTextAsync(imagesJson);
+        var dict = JsonSerializer.Deserialize<Dictionary<string, List<Models.ImagePath>>>(json)
+                   ?? new();
+
+        if (!dict.TryGetValue(sid, out var imageList))
+            return;
+
+        var itemToRemove = imageList.FirstOrDefault(img => img.path == path);
+        if (itemToRemove != null)
+        {
+            imageList.Remove(itemToRemove);
+
+            try
+            {
+                if (File.Exists(path))
+                    File.Delete(path);
+            }
+            catch { }
+
+            if (imageList.Count == 0)
+                dict.Remove(sid);
+
+            var updatedJson = JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true });
+            await File.WriteAllTextAsync(imagesJson, updatedJson);
+        }
     }
 
     public async Task DeleteImagesAsync(string sid)
@@ -80,7 +117,7 @@ public class ImageStorageService : IServices.IImageStorageService
             return;
 
         var json = await File.ReadAllTextAsync(imagesJson);
-        var dict = JsonSerializer.Deserialize<Dictionary<string, List<Models.StoryImage>>>(json)
+        var dict = JsonSerializer.Deserialize<Dictionary<string, List<Models.ImagePath>>>(json)
                    ?? new();
 
         if (!dict.TryGetValue(sid, out var images))

@@ -2,7 +2,14 @@
 
 public record Story(string Sid = "", string Title = "", string Content = "");
 
-public class StoryImage
+public class ImagePath
 {
     public string path { get; set; }
+}
+
+public class ImageItem
+{
+    public string Path { get; set; }
+
+    public ImageSource Source { get; set; }
 }

@@ -2,9 +2,11 @@
 
 public interface IImageStorageService
 {
-    Task<List<ImageSource>> LoadImagesAsync(string sid);
+    Task<List<Models.ImageItem>> LoadImagesAsync(string sid);
 
     Task AddImageAsync(string sid, ImageSource imageSource);
+
+    Task DeleteImageAsync(string sid, string path);
 
     Task DeleteImagesAsync(string sid);
 }
