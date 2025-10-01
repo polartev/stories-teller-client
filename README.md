@@ -1,20 +1,5 @@
 # 📚 Stories Teller
-import requests
 
-url = "https://opendata.dwd.de/climate_environment/CDC/help/zehn_min_ff_Beschreibung_Stationen.txt"
-filename = "zehn_min_ff_Beschreibung_Stationen.txt"
-
-# используем stream=True
-response = requests.get(url, stream=True)
-
-if response.status_code == 200:
-    # пытаемся записать как байты
-    with open(filename, "wb") as f:
-        for chunk in response.iter_content(8192):
-            f.write(chunk)
-    print("Скачивание с записью байтов завершено")
-else:
-    print("Ошибка при запросе:", response.status_code)
 AI-powered cross-platform application that generates text descriptions for user-uploaded photos.
 
 This project consists of three main parts:
